@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found | ZakatEasy</title>
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600;700&family=Amiri&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+  <div class="islamic-border-top"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="site-logo">
+        <span class="logo-icon">Z</span>
+        <span>ZakatEasy</span>
+      </a>
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+      <nav class="main-nav" id="main-nav">
+        <ul>
+          <li><a href="index.html">Calculator</a></li>
+          <li><a href="what-is-zakat.html">What is Zakat?</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-header" style="padding: 80px 24px;">
+    <div class="container">
+      <h1 style="font-size: 4rem; margin-bottom: 16px;">404</h1>
+      <p style="font-size: 1.3rem; margin-bottom: 8px;">Page Not Found</p>
+      <p style="opacity: 0.8;">The page you are looking for does not exist or has been moved.</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container text-center">
+      <p>Here are some helpful links to get you back on track:</p>
+      <div class="mt-3" style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+        <a href="index.html" class="btn btn-primary">Zakat Calculator</a>
+        <a href="what-is-zakat.html" class="btn btn-secondary">What is Zakat?</a>
+        <a href="faq.html" class="btn btn-secondary">FAQ</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        &copy; 2026 ZakatEasy. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggle = document.querySelector('.nav-toggle');
+      const nav = document.getElementById('main-nav');
+      if (toggle && nav) {
+        toggle.addEventListener('click', function () {
+          nav.classList.toggle('open');
+          const expanded = toggle.getAttribute('aria-expanded') === 'true';
+          toggle.setAttribute('aria-expanded', !expanded);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

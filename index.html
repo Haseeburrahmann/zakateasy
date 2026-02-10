@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZakatEasy - Free Islamic Zakat Calculator | Calculate Your Zakat Online</title>
+  <meta name="description" content="Calculate your Zakat accurately with our free Islamic calculator. Based on current gold prices and Islamic scholarship. Perfect for Ramadan 2026.">
+  <meta name="keywords" content="zakat calculator, calculate zakat, nisab, Islamic calculator, Ramadan 2026, zakat online, free zakat calculator">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="ZakatEasy - Free Islamic Zakat Calculator">
+  <meta property="og:description" content="Calculate your Zakat accurately based on current gold prices and Islamic scholarship.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zakateasy.netlify.app/">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://zakateasy.netlify.app/">
+
+  <!-- Favicon -->
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600;700&family=Amiri&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ZakatEasy Calculator",
+    "description": "Free Islamic Zakat Calculator based on current gold prices and Islamic scholarship",
+    "url": "https://zakateasy.netlify.app/",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- Islamic Decorative Top Border -->
+  <div class="islamic-border-top"></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="site-logo">
+        <span class="logo-icon">Z</span>
+        <span>ZakatEasy</span>
+      </a>
+
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        &#9776;
+      </button>
+
+      <nav class="main-nav" id="main-nav">
+        <ul>
+          <li><a href="index.html" class="active">Calculator</a></li>
+          <li><a href="what-is-zakat.html">What is Zakat?</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Calculate Your Zakat <span class="gold-accent">with Confidence</span></h1>
+      <p class="tagline">Free, accurate, and based on Islamic scholarship. No signup required.</p>
+
+      <!-- Nisab Display -->
+      <div id="nisab-display">
+        <div class="nisab-card">
+          <h3>Current Nisab Threshold (Gold)</h3>
+          <div class="nisab-amount">Loading...</div>
+          <div class="nisab-detail">87.48 grams of gold (7.5 tola)</div>
+          <div class="nisab-updated">Fetching latest gold prices...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Calculator Section -->
+  <section class="calculator-section">
+    <div class="container">
+      <h2>Zakat Calculator</h2>
+      <p class="calculator-intro">Enter your assets and liabilities below. All fields are in USD. Leave fields at 0 if not applicable.</p>
+
+      <form id="zakat-form" class="calc-form">
+        <!-- Assets Section -->
+        <div class="form-section-title">
+          <span class="icon">&#9733;</span> Your Assets
+        </div>
+
+        <div class="form-group">
+          <label for="cash">Cash & Bank Balances</label>
+          <input type="number" id="cash" name="cash" value="0" min="0" step="0.01"
+                 placeholder="Enter total cash and bank balance">
+          <span class="input-hint">Include savings, checking, and any cash on hand</span>
+        </div>
+
+        <div class="form-group">
+          <label id="gold-input-label" for="gold">Gold (market value in $)</label>
+          <div class="input-row">
+            <div class="form-group">
+              <input type="number" id="gold" name="gold" value="0" min="0" step="0.01"
+                     placeholder="Enter gold value or weight">
+            </div>
+            <div class="form-group unit-select">
+              <select id="gold-unit" name="gold-unit">
+                <option value="value">$ Value</option>
+                <option value="grams">Grams</option>
+              </select>
+            </div>
+          </div>
+          <span class="input-hint">Include jewelry, coins, and gold bars (exclude daily-wear jewelry per some scholars)</span>
+        </div>
+
+        <div class="form-group">
+          <label id="silver-input-label" for="silver">Silver (market value in $)</label>
+          <div class="input-row">
+            <div class="form-group">
+              <input type="number" id="silver" name="silver" value="0" min="0" step="0.01"
+                     placeholder="Enter silver value or weight">
+            </div>
+            <div class="form-group unit-select">
+              <select id="silver-unit" name="silver-unit">
+                <option value="value">$ Value</option>
+                <option value="grams">Grams</option>
+              </select>
+            </div>
+          </div>
+          <span class="input-hint">Include silver jewelry, coins, and silverware</span>
+        </div>
+
+        <div class="form-group">
+          <label for="investments">Investments & Stocks</label>
+          <input type="number" id="investments" name="investments" value="0" min="0" step="0.01"
+                 placeholder="Enter total investment value">
+          <span class="input-hint">Current market value of shares, mutual funds, and other investments</span>
+        </div>
+
+        <div class="form-group">
+          <label for="business-assets">Business Assets</label>
+          <input type="number" id="business-assets" name="business-assets" value="0" min="0" step="0.01"
+                 placeholder="Enter business asset value">
+          <span class="input-hint">Inventory and goods for sale (exclude fixed assets like equipment)</span>
+        </div>
+
+        <div class="form-group">
+          <label for="other-assets">Other Zakatable Assets</label>
+          <input type="number" id="other-assets" name="other-assets" value="0" min="0" step="0.01"
+                 placeholder="Enter other asset value">
+          <span class="input-hint">Any other wealth subject to Zakat (e.g., rental income receivable)</span>
+        </div>
+
+        <!-- Divider -->
+        <hr class="form-divider">
+
+        <!-- Liabilities Section -->
+        <div class="form-section-title">
+          <span class="icon">&#9881;</span> Deductible Liabilities
+        </div>
+
+        <div class="form-group">
+          <label for="debts">Immediate Debts Owed</label>
+          <input type="number" id="debts" name="debts" value="0" min="0" step="0.01"
+                 placeholder="Enter debts currently due">
+          <span class="input-hint">Personal loans, credit card balances, and debts due now</span>
+        </div>
+
+        <div class="form-group">
+          <label for="unpaid-bills">Unpaid Bills Due</label>
+          <input type="number" id="unpaid-bills" name="unpaid-bills" value="0" min="0" step="0.01"
+                 placeholder="Enter unpaid bills">
+          <span class="input-hint">Rent, utilities, and other bills currently due</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button type="submit" id="calculate-btn" class="btn btn-primary">
+            Calculate Zakat
+          </button>
+          <button type="button" id="reset-btn" class="btn btn-secondary">
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Results Section (hidden by default) -->
+  <section id="results-section" class="results-section hidden">
+    <!-- Results are rendered dynamically by calculator.js -->
+  </section>
+
+  <!-- Info Cards -->
+  <section class="content-section">
+    <div class="container">
+      <h2 class="text-center">Why Use ZakatEasy?</h2>
+      <div class="info-cards">
+        <div class="info-card">
+          <span class="card-icon">&#9798;</span>
+          <h3>Accurate Calculations</h3>
+          <p>Based on current gold prices and the widely-accepted 87.48 grams gold Nisab threshold used by major Islamic institutions.</p>
+        </div>
+        <div class="info-card">
+          <span class="card-icon">&#128274;</span>
+          <h3>Private & Secure</h3>
+          <p>All calculations happen in your browser. We never store your financial data on any server. No account needed.</p>
+        </div>
+        <div class="info-card">
+          <span class="card-icon">&#128214;</span>
+          <h3>Islamically Referenced</h3>
+          <p>Every calculation is backed by Quranic references and scholarly consensus. Full transparency in our methodology.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <h3>ZakatEasy</h3>
+          <p>Helping Muslims fulfill their Zakat obligations with accuracy and confidence. Free, open, and based on Islamic scholarship.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Pages</h4>
+          <ul>
+            <li><a href="index.html">Zakat Calculator</a></li>
+            <li><a href="what-is-zakat.html">What is Zakat?</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="legal/disclaimer.html">Disclaimer</a></li>
+            <li><a href="legal/privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="legal/terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-disclaimer">
+        ZakatEasy is a calculation tool for informational purposes only. Please consult a qualified
+        Islamic scholar for specific circumstances. Calculations are based on the Hanafi method using
+        87.48 grams of gold as the Nisab threshold.
+      </div>
+
+      <div class="footer-bottom">
+        &copy; 2026 ZakatEasy. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/calculator.js"></script>
+
+  <!-- Mobile Nav Toggle -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggle = document.querySelector('.nav-toggle');
+      const nav = document.getElementById('main-nav');
+      if (toggle && nav) {
+        toggle.addEventListener('click', function () {
+          nav.classList.toggle('open');
+          const expanded = toggle.getAttribute('aria-expanded') === 'true';
+          toggle.setAttribute('aria-expanded', !expanded);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

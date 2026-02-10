@@ -1,0 +1,284 @@
+/* ============================================
+   ZakatEasy - Responsive Styles
+   Mobile-first breakpoints
+   ============================================ */
+
+/* --- Tablet (max-width: 768px) --- */
+@media (max-width: 768px) {
+  :root {
+    --header-height: 60px;
+  }
+
+  h1 { font-size: 1.8rem; }
+  h2 { font-size: 1.4rem; }
+  h3 { font-size: 1.15rem; }
+
+  /* Header & Navigation */
+  .nav-toggle {
+    display: block;
+  }
+
+  .main-nav {
+    display: none;
+    position: absolute;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    background: var(--color-primary-dark);
+    box-shadow: var(--shadow-lg);
+    padding: 8px 0;
+    z-index: 99;
+  }
+
+  .main-nav.open {
+    display: block;
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .main-nav a {
+    display: block;
+    padding: 14px 24px;
+    border-radius: 0;
+    font-size: 1rem;
+  }
+
+  .main-nav a:hover,
+  .main-nav a.active {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Hero */
+  .hero {
+    padding: 40px 20px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero .tagline {
+    font-size: 1rem;
+  }
+
+  .nisab-card {
+    padding: 20px;
+  }
+
+  .nisab-amount {
+    font-size: 1.6rem;
+  }
+
+  /* Calculator */
+  .calculator-section {
+    padding: 32px 0;
+  }
+
+  .calc-form {
+    padding: 24px 20px;
+    border-radius: var(--radius-md);
+  }
+
+  .input-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .input-row .unit-select {
+    width: 100%;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+
+  /* Results */
+  .zakat-amount {
+    font-size: 2.2rem;
+  }
+
+  .results-breakdown {
+    padding: 20px;
+  }
+
+  .results-header {
+    padding: 16px 20px;
+  }
+
+  .zakat-amount-display {
+    padding: 24px 20px;
+  }
+
+  .results-dua {
+    padding: 20px;
+  }
+
+  .results-disclaimer {
+    padding: 16px 20px;
+  }
+
+  .below-nisab-message {
+    padding: 16px 20px;
+  }
+
+  .breakdown-row {
+    font-size: 0.9rem;
+  }
+
+  /* Footer */
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  /* Content pages */
+  .page-header {
+    padding: 32px 20px;
+  }
+
+  .content-section {
+    padding: 32px 0;
+  }
+
+  /* Info cards */
+  .info-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* --- Small phones (max-width: 480px) --- */
+@media (max-width: 480px) {
+  html {
+    font-size: 15px;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.3rem; }
+
+  .site-logo {
+    font-size: 1.25rem;
+  }
+
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 1rem;
+  }
+
+  .hero {
+    padding: 32px 16px;
+  }
+
+  .hero h1 {
+    font-size: 1.7rem;
+  }
+
+  .calc-form {
+    padding: 20px 16px;
+  }
+
+  .form-group input[type="number"],
+  .form-group select {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+
+  .btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+
+  .zakat-amount {
+    font-size: 1.9rem;
+  }
+
+  .nisab-amount {
+    font-size: 1.4rem;
+  }
+
+  .faq-question {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+  }
+
+  .faq-answer {
+    padding: 0 16px;
+  }
+
+  .faq-item.open .faq-answer {
+    padding: 0 16px 16px;
+  }
+
+  .info-card {
+    padding: 20px;
+  }
+
+  .arabic-text {
+    font-size: 1.2rem;
+  }
+}
+
+/* --- Large screens (min-width: 1200px) --- */
+@media (min-width: 1200px) {
+  .hero h1 {
+    font-size: 3.2rem;
+  }
+
+  .hero .tagline {
+    font-size: 1.3rem;
+  }
+
+  .calc-form {
+    padding: 44px;
+  }
+}
+
+/* --- Print Styles --- */
+@media print {
+  .site-header,
+  .site-footer,
+  .nav-toggle,
+  .main-nav,
+  .ad-container,
+  .form-actions,
+  .hero {
+    display: none !important;
+  }
+
+  body {
+    font-size: 12pt;
+    color: black;
+    background: white;
+  }
+
+  .results-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .calc-form {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  a {
+    color: black;
+    text-decoration: underline;
+  }
+
+  .results-section {
+    display: block !important;
+  }
+}
