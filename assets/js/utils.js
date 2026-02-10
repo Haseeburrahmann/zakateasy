@@ -4,22 +4,33 @@
 
 const Utils = {
   /**
-   * Format a number as currency (USD by default)
+   * Format a number as currency using Intl (auto-detects locale)
    */
-  formatCurrency(amount, currency = 'USD') {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(amount);
+  formatCurrency(amount, currency) {
+    const cur = currency || (typeof CurrencyAPI !== 'undefined' ? CurrencyAPI.activeCurrency : 'USD');
+    try {
+      return new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: cur,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amount);
+    } catch {
+      // Fallback if currency code is invalid
+      return new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amount);
+    }
   },
 
   /**
    * Format a number with commas
    */
   formatNumber(num, decimals = 2) {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat(undefined, {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals
     }).format(num);
@@ -57,7 +68,7 @@ const Utils = {
    */
   formatDate(date) {
     if (!date) date = new Date();
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat(undefined, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',

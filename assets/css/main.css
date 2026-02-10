@@ -304,6 +304,51 @@ p {
   margin-right: auto;
 }
 
+/* --- Currency Selector --- */
+.currency-selector {
+  text-align: center;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.currency-selector label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.currency-selector select {
+  padding: 10px 16px;
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  color: var(--color-primary-dark);
+  background: white;
+  cursor: pointer;
+  font-weight: 600;
+  min-width: 220px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.currency-selector select:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+
+.currency-hint {
+  display: block;
+  width: 100%;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
 /* --- Calculator Form --- */
 .calc-form {
   background: white;

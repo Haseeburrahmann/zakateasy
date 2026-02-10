@@ -72,6 +72,17 @@
     font-size: 1.6rem;
   }
 
+  /* Currency selector */
+  .currency-selector {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .currency-selector select {
+    width: 100%;
+    min-width: unset;
+  }
+
   /* Calculator */
   .calculator-section {
     padding: 32px 0;

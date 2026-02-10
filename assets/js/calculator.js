@@ -1,5 +1,6 @@
 /**
  * ZakatEasy - Zakat Calculator Logic
+ * Supports multi-currency via CurrencyAPI
  */
 
 const ZakatCalculator = {
@@ -14,8 +15,15 @@ const ZakatCalculator = {
     this.nisabDisplay = document.getElementById('nisab-display');
     this.calculateBtn = document.getElementById('calculate-btn');
     this.resetBtn = document.getElementById('reset-btn');
+    this.currencySelect = document.getElementById('currency-select');
 
     if (!this.form) return;
+
+    // Initialize currency support first
+    await CurrencyAPI.init();
+
+    // Populate and set the currency dropdown
+    this.populateCurrencyDropdown();
 
     // Load Nisab info
     await this.loadNisabInfo();
@@ -30,11 +38,92 @@ const ZakatCalculator = {
       this.resetBtn.addEventListener('click', () => this.reset());
     }
 
+    // Currency selector change
+    if (this.currencySelect) {
+      this.currencySelect.addEventListener('change', () => {
+        CurrencyAPI.setCurrency(this.currencySelect.value);
+        this.updateNisabDisplay();
+        this.updateLabels();
+        // Re-calculate if results are visible
+        if (this.resultsSection && !this.resultsSection.classList.contains('hidden')) {
+          this.calculate();
+        }
+      });
+    }
+
     // Gold/Silver unit toggle handling
     this.setupUnitToggles();
 
     // Format inputs on blur
     this.setupInputFormatting();
+
+    // Update labels with currency symbol
+    this.updateLabels();
+  },
+
+  /**
+   * Populate the currency dropdown with popular currencies
+   */
+  populateCurrencyDropdown() {
+    if (!this.currencySelect) return;
+
+    this.currencySelect.innerHTML = '';
+    CurrencyAPI.POPULAR_CURRENCIES.forEach(cur => {
+      const option = document.createElement('option');
+      option.value = cur.code;
+      option.textContent = `${cur.code} - ${cur.name}`;
+      this.currencySelect.appendChild(option);
+    });
+
+    // Set to active (auto-detected or saved) currency
+    this.currencySelect.value = CurrencyAPI.activeCurrency;
+
+    // If active currency isn't in popular list, add it
+    if (this.currencySelect.value !== CurrencyAPI.activeCurrency) {
+      const option = document.createElement('option');
+      option.value = CurrencyAPI.activeCurrency;
+      option.textContent = `${CurrencyAPI.activeCurrency} - ${CurrencyAPI.getCurrencyName(CurrencyAPI.activeCurrency)}`;
+      this.currencySelect.insertBefore(option, this.currencySelect.firstChild);
+      this.currencySelect.value = CurrencyAPI.activeCurrency;
+    }
+  },
+
+  /**
+   * Get the active currency code
+   */
+  getCurrency() {
+    return CurrencyAPI.activeCurrency;
+  },
+
+  /**
+   * Format amount in active currency
+   */
+  fmt(amount) {
+    return Utils.formatCurrency(amount, this.getCurrency());
+  },
+
+  /**
+   * Update form labels with current currency symbol
+   */
+  updateLabels() {
+    const code = this.getCurrency();
+    const goldUnit = document.getElementById('gold-unit');
+    const silverUnit = document.getElementById('silver-unit');
+    const goldLabel = document.getElementById('gold-input-label');
+    const silverLabel = document.getElementById('silver-input-label');
+
+    const currencyLabel = code === 'USD' ? '$' : code;
+
+    if (goldLabel) {
+      goldLabel.textContent = (goldUnit && goldUnit.value === 'grams')
+        ? 'Gold (in grams)'
+        : `Gold (market value in ${currencyLabel})`;
+    }
+    if (silverLabel) {
+      silverLabel.textContent = (silverUnit && silverUnit.value === 'grams')
+        ? 'Silver (in grams)'
+        : `Silver (market value in ${currencyLabel})`;
+    }
   },
 
   /**
@@ -51,14 +140,20 @@ const ZakatCalculator = {
   },
 
   /**
-   * Update the Nisab display on the page
+   * Update the Nisab display on the page (in active currency)
    */
   updateNisabDisplay() {
     if (!this.nisabDisplay || !this.nisabInfo) return;
 
     const info = this.nisabInfo;
-    const nisabFormatted = Utils.formatCurrency(info.nisabGold);
-    const goldPrice = Utils.formatCurrency(info.goldPricePerGram);
+    const currency = this.getCurrency();
+
+    // Convert USD values to local currency
+    const nisabLocal = CurrencyAPI.convert(info.nisabGold);
+    const goldPriceLocal = CurrencyAPI.convert(info.goldPricePerGram);
+
+    const nisabFormatted = Utils.formatCurrency(nisabLocal, currency);
+    const goldPrice = Utils.formatCurrency(goldPriceLocal, currency);
     const updatedText = info.lastUpdated
       ? Utils.formatDate(info.lastUpdated)
       : 'Using estimated prices';
@@ -73,7 +168,7 @@ const ZakatCalculator = {
     this.nisabDisplay.innerHTML = `
       <div class="nisab-card">
         <h3>Current Nisab Threshold (Gold)</h3>
-        <div class="nisab-amount">${nisabFormatted} USD</div>
+        <div class="nisab-amount">${nisabFormatted} ${currency}</div>
         <div class="nisab-detail">${info.nisabGrams} grams @ ${goldPrice}/gram</div>
         <div class="nisab-updated">Last Updated: ${updatedText}</div>
         ${statusNote}
@@ -86,41 +181,27 @@ const ZakatCalculator = {
    */
   showNisabError() {
     if (!this.nisabDisplay) return;
+    const fallbackNisab = CurrencyAPI.convert(7245);
     this.nisabDisplay.innerHTML = `
       <div class="nisab-card nisab-error">
         <h3>Nisab Threshold</h3>
-        <p>Unable to load current gold prices. Using estimated Nisab of $7,245 USD.</p>
+        <p>Unable to load current gold prices. Using estimated Nisab of ${this.fmt(fallbackNisab)}.</p>
       </div>
     `;
   },
 
   /**
-   * Setup gold/silver unit toggle (grams vs dollar value)
+   * Setup gold/silver unit toggle (grams vs local currency value)
    */
   setupUnitToggles() {
     const goldUnit = document.getElementById('gold-unit');
     const silverUnit = document.getElementById('silver-unit');
-    const goldLabel = document.getElementById('gold-input-label');
-    const silverLabel = document.getElementById('silver-input-label');
 
     if (goldUnit) {
-      goldUnit.addEventListener('change', () => {
-        if (goldLabel) {
-          goldLabel.textContent = goldUnit.value === 'grams'
-            ? 'Gold (in grams)'
-            : 'Gold (market value in $)';
-        }
-      });
+      goldUnit.addEventListener('change', () => this.updateLabels());
     }
-
     if (silverUnit) {
-      silverUnit.addEventListener('change', () => {
-        if (silverLabel) {
-          silverLabel.textContent = silverUnit.value === 'grams'
-            ? 'Silver (in grams)'
-            : 'Silver (market value in $)';
-        }
-      });
+      silverUnit.addEventListener('change', () => this.updateLabels());
     }
   },
 
@@ -171,23 +252,32 @@ const ZakatCalculator = {
 
   /**
    * Compute the full Zakat breakdown
+   * All user inputs are in LOCAL currency.
+   * Gold/silver prices from API are in USD, converted to local currency for gram-to-value.
+   * Nisab is in USD, we compare in local currency.
    */
   computeBreakdown(values) {
     const info = this.nisabInfo;
-    const goldPricePerGram = info ? info.goldPricePerGram : 82.80;
-    const silverPricePerGram = info ? info.silverPricePerGram : 1.05;
-    const nisabThreshold = info ? info.nisabGold : 7245;
+    // Gold/silver prices are in USD per gram from the API
+    const goldPricePerGramUSD = info ? info.goldPricePerGram : 161.33;
+    const silverPricePerGramUSD = info ? info.silverPricePerGram : 2.64;
+    const nisabUSD = info ? info.nisabGold : 7245;
 
-    // Convert gold/silver to dollar values if entered in grams
+    // Convert to local currency
+    const goldPricePerGramLocal = CurrencyAPI.convert(goldPricePerGramUSD);
+    const silverPricePerGramLocal = CurrencyAPI.convert(silverPricePerGramUSD);
+    const nisabLocal = CurrencyAPI.convert(nisabUSD);
+
+    // Convert gold/silver to local currency value if entered in grams
     const goldValue = values.goldUnit === 'grams'
-      ? values.goldAmount * goldPricePerGram
+      ? values.goldAmount * goldPricePerGramLocal
       : values.goldAmount;
 
     const silverValue = values.silverUnit === 'grams'
-      ? values.silverAmount * silverPricePerGram
+      ? values.silverAmount * silverPricePerGramLocal
       : values.silverAmount;
 
-    // Calculate totals
+    // Calculate totals (all in local currency)
     const totalAssets = values.cash + goldValue + silverValue
       + values.investments + values.businessAssets + values.otherAssets;
 
@@ -195,7 +285,7 @@ const ZakatCalculator = {
 
     const netWealth = totalAssets - totalLiabilities;
 
-    const meetsNisab = netWealth >= nisabThreshold;
+    const meetsNisab = netWealth >= nisabLocal;
 
     const zakatOwed = meetsNisab ? netWealth * this.ZAKAT_RATE : 0;
 
@@ -215,7 +305,7 @@ const ZakatCalculator = {
       totalAssets,
       totalLiabilities,
       netWealth,
-      nisabThreshold,
+      nisabThreshold: nisabLocal,
       meetsNisab,
       zakatOwed,
       zakatRate: this.ZAKAT_RATE
@@ -241,6 +331,8 @@ const ZakatCalculator = {
    * Render results when Zakat is owed
    */
   renderZakatOwed(b) {
+    const f = (amount) => this.fmt(amount);
+
     return `
       <div class="results-card">
         <div class="results-header">
@@ -249,7 +341,7 @@ const ZakatCalculator = {
 
         <div class="zakat-amount-display">
           <span class="zakat-label">Your Zakat Owed</span>
-          <span class="zakat-amount">${Utils.formatCurrency(b.zakatOwed)}</span>
+          <span class="zakat-amount">${f(b.zakatOwed)}</span>
           <span class="zakat-rate">(2.5% of Net Zakatable Wealth)</span>
         </div>
 
@@ -260,31 +352,31 @@ const ZakatCalculator = {
             <h4>Assets</h4>
             <div class="breakdown-row">
               <span>Cash & Bank Balances</span>
-              <span>${Utils.formatCurrency(b.assets.cash)}</span>
+              <span>${f(b.assets.cash)}</span>
             </div>
             <div class="breakdown-row">
               <span>Gold</span>
-              <span>${Utils.formatCurrency(b.assets.gold)}</span>
+              <span>${f(b.assets.gold)}</span>
             </div>
             <div class="breakdown-row">
               <span>Silver</span>
-              <span>${Utils.formatCurrency(b.assets.silver)}</span>
+              <span>${f(b.assets.silver)}</span>
             </div>
             <div class="breakdown-row">
               <span>Investments & Stocks</span>
-              <span>${Utils.formatCurrency(b.assets.investments)}</span>
+              <span>${f(b.assets.investments)}</span>
             </div>
             <div class="breakdown-row">
               <span>Business Assets</span>
-              <span>${Utils.formatCurrency(b.assets.businessAssets)}</span>
+              <span>${f(b.assets.businessAssets)}</span>
             </div>
             <div class="breakdown-row">
               <span>Other Assets</span>
-              <span>${Utils.formatCurrency(b.assets.otherAssets)}</span>
+              <span>${f(b.assets.otherAssets)}</span>
             </div>
             <div class="breakdown-row breakdown-total">
               <span>Total Assets</span>
-              <span>${Utils.formatCurrency(b.totalAssets)}</span>
+              <span>${f(b.totalAssets)}</span>
             </div>
           </div>
 
@@ -292,26 +384,26 @@ const ZakatCalculator = {
             <h4>Deductible Liabilities</h4>
             <div class="breakdown-row">
               <span>Immediate Debts</span>
-              <span>- ${Utils.formatCurrency(b.liabilities.debts)}</span>
+              <span>- ${f(b.liabilities.debts)}</span>
             </div>
             <div class="breakdown-row">
               <span>Unpaid Bills</span>
-              <span>- ${Utils.formatCurrency(b.liabilities.unpaidBills)}</span>
+              <span>- ${f(b.liabilities.unpaidBills)}</span>
             </div>
             <div class="breakdown-row breakdown-total">
               <span>Total Liabilities</span>
-              <span>- ${Utils.formatCurrency(b.totalLiabilities)}</span>
+              <span>- ${f(b.totalLiabilities)}</span>
             </div>
           </div>
 
           <div class="breakdown-section">
             <div class="breakdown-row breakdown-total">
               <span>Net Zakatable Wealth</span>
-              <span>${Utils.formatCurrency(b.netWealth)}</span>
+              <span>${f(b.netWealth)}</span>
             </div>
             <div class="breakdown-row">
               <span>Nisab Threshold</span>
-              <span>${Utils.formatCurrency(b.nisabThreshold)}</span>
+              <span>${f(b.nisabThreshold)}</span>
             </div>
           </div>
         </div>
@@ -336,6 +428,8 @@ const ZakatCalculator = {
    * Render results when wealth is below Nisab
    */
   renderBelowNisab(b) {
+    const f = (amount) => this.fmt(amount);
+
     return `
       <div class="results-card below-nisab">
         <div class="results-header">
@@ -344,8 +438,8 @@ const ZakatCalculator = {
 
         <div class="zakat-amount-display below-nisab-display">
           <span class="zakat-label">No Zakat Owed</span>
-          <span class="zakat-detail">Your net wealth of ${Utils.formatCurrency(b.netWealth)}
-          is below the current Nisab threshold of ${Utils.formatCurrency(b.nisabThreshold)}.</span>
+          <span class="zakat-detail">Your net wealth of ${f(b.netWealth)}
+          is below the current Nisab threshold of ${f(b.nisabThreshold)}.</span>
         </div>
 
         <div class="below-nisab-message">
@@ -360,23 +454,23 @@ const ZakatCalculator = {
           <h3>Your Wealth Summary</h3>
           <div class="breakdown-row">
             <span>Total Assets</span>
-            <span>${Utils.formatCurrency(b.totalAssets)}</span>
+            <span>${f(b.totalAssets)}</span>
           </div>
           <div class="breakdown-row">
             <span>Total Liabilities</span>
-            <span>- ${Utils.formatCurrency(b.totalLiabilities)}</span>
+            <span>- ${f(b.totalLiabilities)}</span>
           </div>
           <div class="breakdown-row breakdown-total">
             <span>Net Wealth</span>
-            <span>${Utils.formatCurrency(b.netWealth)}</span>
+            <span>${f(b.netWealth)}</span>
           </div>
           <div class="breakdown-row">
             <span>Nisab Threshold</span>
-            <span>${Utils.formatCurrency(b.nisabThreshold)}</span>
+            <span>${f(b.nisabThreshold)}</span>
           </div>
           <div class="breakdown-row">
             <span>Shortfall</span>
-            <span>${Utils.formatCurrency(b.nisabThreshold - b.netWealth)}</span>
+            <span>${f(b.nisabThreshold - b.netWealth)}</span>
           </div>
         </div>
 
@@ -400,6 +494,11 @@ const ZakatCalculator = {
     // Reset all number inputs to 0
     const inputs = this.form.querySelectorAll('input[type="number"]');
     inputs.forEach(input => input.value = '0');
+    // Restore currency dropdown selection (form.reset may have cleared it)
+    if (this.currencySelect) {
+      this.currencySelect.value = CurrencyAPI.activeCurrency;
+    }
+    this.updateLabels();
     Utils.scrollTo('#zakat-form');
   }
 };
