@@ -1,7 +1,6 @@
 /**
  * ZakatEasy - API Integration
- * Fetches gold and silver prices for Nisab calculation
- * Uses gold-api.com (free, no API key required, no rate limits)
+ * Fetches gold and silver prices via Netlify serverless function (proxy to gold-api.com)
  * Supports multi-currency via fawazahmed0 currency API + ipapi.co geo-detection
  */
 
@@ -12,15 +11,14 @@ const MetalsAPI = {
   GOLD_NISAB_GRAMS: 87.48,
   SILVER_NISAB_GRAMS: 612.36,
 
-  // API endpoints (gold-api.com - free, no key required)
-  GOLD_API_URL: 'https://api.gold-api.com/price/XAU',
-  SILVER_API_URL: 'https://api.gold-api.com/price/XAG',
+  // Netlify serverless function endpoint (proxies to gold-api.com, avoids CORS)
+  METALS_API_URL: '/.netlify/functions/metals',
 
   // Fallback prices (updated Feb 2026 as safety net)
   FALLBACK_PRICES: {
-    goldPerGram: 161.33,
+    goldPerGram: 162.53,
     silverPerGram: 2.64,
-    goldPerOz: 5017.70,
+    goldPerOz: 5055.30,
     silverPerOz: 82.01,
     timestamp: null,
     isFallback: true
@@ -42,7 +40,7 @@ const MetalsAPI = {
       this.cachePrices(prices);
       return prices;
     } catch (error) {
-      console.warn('Gold API fetch failed, using fallback prices:', error.message);
+      console.warn('Metals API fetch failed, using fallback prices:', error.message);
       // Try returning stale cache if available
       const staleCache = this.getCachedPrices(true);
       if (staleCache) {
@@ -55,35 +53,26 @@ const MetalsAPI = {
   },
 
   /**
-   * Fetch prices from gold-api.com (free, no API key needed)
-   * Endpoint: https://api.gold-api.com/price/XAU
-   * Response: { "name": "Gold", "price": 5017.70, "symbol": "XAU", "updatedAt": "...", "updatedAtReadable": "..." }
+   * Fetch prices via Netlify serverless function
+   * The function proxies to gold-api.com server-side (no CORS issues)
+   * Response: { success: true, gold: { price: 5055.30 }, silver: { price: 82.01 } }
    */
   async fetchFromAPI() {
-    // Fetch gold and silver prices in parallel
-    const [goldResponse, silverResponse] = await Promise.all([
-      fetch(this.GOLD_API_URL),
-      fetch(this.SILVER_API_URL)
-    ]);
+    const response = await fetch(this.METALS_API_URL);
 
-    if (!goldResponse.ok) {
-      throw new Error(`Gold API responded with status ${goldResponse.status}`);
-    }
-    if (!silverResponse.ok) {
-      throw new Error(`Silver API responded with status ${silverResponse.status}`);
+    if (!response.ok) {
+      throw new Error(`Metals API responded with status ${response.status}`);
     }
 
-    const goldData = await goldResponse.json();
-    const silverData = await silverResponse.json();
+    const data = await response.json();
 
-    // Validate response structure
-    if (!goldData.price || !silverData.price) {
-      throw new Error('API response missing price data');
+    if (!data.success || !data.gold?.price || !data.silver?.price) {
+      throw new Error(data.error || 'API response missing price data');
     }
 
-    // gold-api.com returns price per troy ounce in USD
-    const goldPricePerOz = goldData.price;
-    const silverPricePerOz = silverData.price;
+    // Prices are per troy ounce in USD
+    const goldPricePerOz = data.gold.price;
+    const silverPricePerOz = data.silver.price;
 
     return {
       goldPerOz: goldPricePerOz,

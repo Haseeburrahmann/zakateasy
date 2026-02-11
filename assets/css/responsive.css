@@ -74,13 +74,9 @@
 
   /* Currency selector */
   .currency-selector {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .currency-selector select {
-    width: 100%;
-    min-width: unset;
+    max-width: 100%;
+    margin: 0 auto 24px;
+    padding: 16px 20px;
   }
 
   /* Calculator */
