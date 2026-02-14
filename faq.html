@@ -83,6 +83,7 @@
         <ul>
           <li><a href="index.html">Calculator</a></li>
           <li><a href="what-is-zakat.html">What is Zakat?</a></li>
+          <li><a href="blog/index.html">Blog</a></li>
           <li><a href="faq.html" class="active">FAQ</a></li>
           <li><a href="about.html">About</a></li>
         </ul>
@@ -334,7 +335,18 @@
   <!-- Footer -->
   <footer class="site-footer">
     <div class="container">
-      <div class="footer-inner">
+      <div class="footer-newsletter">
+        <h3>Stay Updated</h3>
+        <p>Get Zakat tips, Ramadan reminders, and your free checklist.</p>
+        <form name="newsletter-footer-faq" method="POST" data-netlify="true" action="thank-you.html">
+          <input type="hidden" name="form-name" value="newsletter-footer-faq">
+          <div class="newsletter-form">
+            <input type="email" name="email" placeholder="Your email address" required>
+            <button type="submit" class="btn btn-gold">Subscribe</button>
+          </div>
+        </form>
+      </div>
+      <div class="footer-inner-4col">
         <div class="footer-brand">
           <h3>ZakatEasy</h3>
           <p>Helping Muslims fulfill their Zakat obligations with accuracy and confidence.</p>
@@ -346,6 +358,13 @@
             <li><a href="what-is-zakat.html">What is Zakat?</a></li>
             <li><a href="faq.html">FAQ</a></li>
             <li><a href="about.html">About</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="blog/index.html">Blog</a></li>
+            <li><a href="downloads/ramadan-zakat-checklist.html">Zakat Checklist</a></li>
           </ul>
         </div>
         <div class="footer-links">

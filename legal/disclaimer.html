@@ -41,6 +41,7 @@
         <ul>
           <li><a href="../index.html">Calculator</a></li>
           <li><a href="../what-is-zakat.html">What is Zakat?</a></li>
+          <li><a href="../blog/index.html">Blog</a></li>
           <li><a href="../faq.html">FAQ</a></li>
           <li><a href="../about.html">About</a></li>
         </ul>
@@ -116,7 +117,18 @@
 
   <footer class="site-footer">
     <div class="container">
-      <div class="footer-inner">
+      <div class="footer-newsletter">
+        <h3>Stay Updated</h3>
+        <p>Get Zakat tips, Ramadan reminders, and your free checklist.</p>
+        <form name="newsletter-footer-disclaimer" method="POST" data-netlify="true" action="../thank-you.html">
+          <input type="hidden" name="form-name" value="newsletter-footer-disclaimer">
+          <div class="newsletter-form">
+            <input type="email" name="email" placeholder="Your email address" required>
+            <button type="submit" class="btn btn-gold">Subscribe</button>
+          </div>
+        </form>
+      </div>
+      <div class="footer-inner-4col">
         <div class="footer-brand">
           <h3>ZakatEasy</h3>
           <p>Helping Muslims fulfill their Zakat obligations with accuracy and confidence.</p>
@@ -131,11 +143,18 @@
           </ul>
         </div>
         <div class="footer-links">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="../blog/index.html">Blog</a></li>
+            <li><a href="../downloads/ramadan-zakat-checklist.html">Zakat Checklist</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
           <h4>Legal</h4>
           <ul>
-            <li><a href="disclaimer.html">Disclaimer</a></li>
-            <li><a href="privacy-policy.html">Privacy Policy</a></li>
-            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="../legal/disclaimer.html">Disclaimer</a></li>
+            <li><a href="../legal/privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="../legal/terms.html">Terms of Service</a></li>
           </ul>
         </div>
       </div>

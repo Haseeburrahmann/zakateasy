@@ -1,0 +1,136 @@
+/* ============================================
+   ZakatEasy - Ramadan Countdown Styles
+   ============================================ */
+
+/* --- Ramadan Countdown Section --- */
+.ramadan-countdown {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 60%, #1a6b3f 100%);
+  color: white;
+  text-align: center;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ramadan-countdown::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='30' fill='none' stroke='rgba(212,175,55,0.06)' stroke-width='1'/%3E%3Cpath d='M40 10A30 30 0 0 1 40 70A25 25 0 0 0 40 10Z' fill='rgba(212,175,55,0.04)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.ramadan-countdown h2 {
+  color: white;
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.ramadan-countdown .countdown-subtitle {
+  color: rgba(255,255,255,0.8);
+  font-size: 1rem;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.ramadan-countdown .crescent {
+  color: var(--color-secondary);
+}
+
+/* --- Countdown Timer --- */
+.countdown-timer {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  position: relative;
+}
+
+.countdown-unit {
+  background: rgba(255,255,255,0.12);
+  border-radius: var(--radius-md);
+  padding: 16px 12px;
+  min-width: 80px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.countdown-number {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  line-height: 1.1;
+}
+
+.countdown-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 4px;
+}
+
+/* --- Ramadan Active Message --- */
+.ramadan-active-msg {
+  font-size: 1.3rem;
+  color: var(--color-secondary);
+  font-family: var(--font-heading);
+  position: relative;
+}
+
+.ramadan-active-msg .arabic-text {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.5rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .ramadan-countdown {
+    padding: 32px 20px;
+  }
+
+  .ramadan-countdown h2 {
+    font-size: 1.3rem;
+  }
+
+  .countdown-timer {
+    gap: 10px;
+  }
+
+  .countdown-unit {
+    min-width: 65px;
+    padding: 12px 8px;
+  }
+
+  .countdown-number {
+    font-size: 1.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .countdown-timer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  .countdown-unit {
+    min-width: unset;
+  }
+
+  .countdown-number {
+    font-size: 1.8rem;
+  }
+}
+
+@media print {
+  .ramadan-countdown {
+    display: none !important;
+  }
+}

@@ -13,6 +13,19 @@
 
   <link rel="stylesheet" href="../assets/css/main.css">
   <link rel="stylesheet" href="../assets/css/responsive.css">
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6867328086411956"
+       crossorigin="anonymous"></script>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R8S4MBWFTK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-R8S4MBWFTK');
+  </script>
 </head>
 <body>
   <div class="islamic-border-top"></div>
@@ -28,6 +41,7 @@
         <ul>
           <li><a href="../index.html">Calculator</a></li>
           <li><a href="../what-is-zakat.html">What is Zakat?</a></li>
+          <li><a href="../blog/index.html">Blog</a></li>
           <li><a href="../faq.html">FAQ</a></li>
           <li><a href="../about.html">About</a></li>
         </ul>
@@ -126,9 +140,32 @@
     </div>
   </section>
 
+  <!-- Ad Unit -->
+  <div class="ad-container">
+    <div class="ad-label">Advertisement</div>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-6867328086411956"
+         data-ad-slot="auto"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
   <footer class="site-footer">
     <div class="container">
-      <div class="footer-inner">
+      <div class="footer-newsletter">
+        <h3>Stay Updated</h3>
+        <p>Get Zakat tips, Ramadan reminders, and your free checklist.</p>
+        <form name="newsletter-footer-privacy" method="POST" data-netlify="true" action="../thank-you.html">
+          <input type="hidden" name="form-name" value="newsletter-footer-privacy">
+          <div class="newsletter-form">
+            <input type="email" name="email" placeholder="Your email address" required>
+            <button type="submit" class="btn btn-gold">Subscribe</button>
+          </div>
+        </form>
+      </div>
+      <div class="footer-inner-4col">
         <div class="footer-brand">
           <h3>ZakatEasy</h3>
           <p>Helping Muslims fulfill their Zakat obligations with accuracy and confidence.</p>
@@ -143,11 +180,18 @@
           </ul>
         </div>
         <div class="footer-links">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="../blog/index.html">Blog</a></li>
+            <li><a href="../downloads/ramadan-zakat-checklist.html">Zakat Checklist</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
           <h4>Legal</h4>
           <ul>
-            <li><a href="disclaimer.html">Disclaimer</a></li>
-            <li><a href="privacy-policy.html">Privacy Policy</a></li>
-            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="../legal/disclaimer.html">Disclaimer</a></li>
+            <li><a href="../legal/privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="../legal/terms.html">Terms of Service</a></li>
           </ul>
         </div>
       </div>
