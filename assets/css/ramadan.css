@@ -2,63 +2,69 @@
    ZakatEasy - Ramadan Countdown Styles
    ============================================ */
 
-/* --- Ramadan Countdown Section --- */
+/* --- Hero Cards Row (Nisab + Countdown side by side) --- */
+.hero-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+  align-items: stretch;
+}
+
+.hero-cards #nisab-display {
+  display: flex;
+}
+
+.hero-cards .nisab-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* --- Ramadan Countdown (inside hero) --- */
 .ramadan-countdown {
-  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 60%, #1a6b3f 100%);
-  color: white;
+  background: rgba(255,255,255,0.08);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 24px 20px;
   text-align: center;
-  padding: 40px 24px;
-  position: relative;
-  overflow: hidden;
-}
-
-.ramadan-countdown::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='30' fill='none' stroke='rgba(212,175,55,0.06)' stroke-width='1'/%3E%3Cpath d='M40 10A30 30 0 0 1 40 70A25 25 0 0 0 40 10Z' fill='rgba(212,175,55,0.04)'/%3E%3C/svg%3E");
-  pointer-events: none;
-}
-
-.ramadan-countdown h2 {
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   color: white;
-  font-size: 1.6rem;
-  margin-bottom: 4px;
-  position: relative;
 }
 
-.ramadan-countdown .countdown-subtitle {
-  color: rgba(255,255,255,0.8);
-  font-size: 1rem;
-  margin-bottom: 24px;
-  position: relative;
-}
-
-.ramadan-countdown .crescent {
-  color: var(--color-secondary);
+.countdown-heading {
+  color: var(--color-secondary) !important;
+  font-size: 0.9rem !important;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 16px !important;
+  font-family: var(--font-body) !important;
+  font-weight: 600 !important;
 }
 
 /* --- Countdown Timer --- */
 .countdown-timer {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  position: relative;
+  gap: 12px;
 }
 
 .countdown-unit {
-  background: rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.2);
   border-radius: var(--radius-md);
-  padding: 16px 12px;
-  min-width: 80px;
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255,255,255,0.1);
+  padding: 14px 10px;
+  min-width: 68px;
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
 .countdown-number {
   display: block;
   font-family: var(--font-heading);
-  font-size: 2.2rem;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--color-secondary);
   line-height: 1.1;
@@ -66,10 +72,10 @@
 
 .countdown-label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255,255,255,0.6);
   margin-top: 4px;
 }
 
@@ -78,23 +84,24 @@
   font-size: 1.3rem;
   color: var(--color-secondary);
   font-family: var(--font-heading);
-  position: relative;
 }
 
 .ramadan-active-msg .arabic-text {
   display: block;
   margin-top: 8px;
   font-size: 1.5rem;
+  font-family: var(--font-arabic);
 }
 
 /* --- Responsive --- */
 @media (max-width: 768px) {
-  .ramadan-countdown {
-    padding: 32px 20px;
+  .hero-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-  .ramadan-countdown h2 {
-    font-size: 1.3rem;
+  .ramadan-countdown {
+    padding: 20px 16px;
   }
 
   .countdown-timer {
@@ -102,7 +109,7 @@
   }
 
   .countdown-unit {
-    min-width: 65px;
+    min-width: 60px;
     padding: 12px 8px;
   }
 
@@ -113,19 +120,20 @@
 
 @media (max-width: 480px) {
   .countdown-timer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    max-width: 200px;
-    margin: 0 auto;
+    gap: 8px;
   }
 
   .countdown-unit {
-    min-width: unset;
+    min-width: 55px;
+    padding: 10px 6px;
   }
 
   .countdown-number {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+  }
+
+  .countdown-label {
+    font-size: 0.6rem;
   }
 }
 

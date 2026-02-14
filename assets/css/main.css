@@ -235,12 +235,18 @@ p {
 /* --- Nisab Display Card --- */
 .nisab-card {
   background: white;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: 24px 28px;
   text-align: center;
   box-shadow: var(--shadow-md);
   max-width: 480px;
   margin: 0 auto;
+}
+
+/* When inside hero-cards grid, remove max-width to fill column */
+.hero-cards .nisab-card {
+  max-width: none;
+  margin: 0;
 }
 
 .nisab-card h3 {
@@ -868,6 +874,80 @@ p {
   grid-template-columns: 2fr 1fr 1fr;
   gap: 40px;
   margin-bottom: 32px;
+}
+
+/* --- Footer Newsletter Section --- */
+.footer-newsletter {
+  text-align: center;
+  padding: 32px 0;
+  margin-bottom: 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.footer-newsletter h3 {
+  color: var(--color-secondary);
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+
+.footer-newsletter p {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 8px;
+  max-width: 420px;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.newsletter-form input[type="email"] {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+}
+
+.newsletter-form input[type="email"]::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+.newsletter-form input[type="email"]:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  background: rgba(255,255,255,0.15);
+}
+
+/* --- Footer 4-Column Grid --- */
+.footer-inner-4col {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 32px;
+}
+
+.btn-gold {
+  background: var(--color-secondary);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-gold:hover {
+  background: var(--color-secondary-light);
 }
 
 .footer-brand h3 {
