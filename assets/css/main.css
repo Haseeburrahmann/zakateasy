@@ -243,9 +243,39 @@ p {
   margin: 0 auto;
 }
 
-/* When inside hero-cards grid, remove max-width to fill column */
-.hero-cards .nisab-card {
-  max-width: none;
+/* --- Nisab Toggle (Gold/Silver Standard) --- */
+.nisab-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.nisab-toggle-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.7);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.nisab-toggle-option:has(input:checked) {
+  background: rgba(212,175,55,0.15);
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+}
+
+.nisab-toggle-option input[type="radio"] {
+  accent-color: var(--color-secondary);
+  width: 14px;
+  height: 14px;
   margin: 0;
 }
 

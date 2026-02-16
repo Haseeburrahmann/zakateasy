@@ -12,6 +12,13 @@
   <meta property="og:description" content="Calculate your Zakat accurately based on current gold prices and Islamic scholarship.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://zakateasy.netlify.app/">
+  <meta property="og:image" content="https://zakateasy.netlify.app/assets/images/og-image.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ZakatEasy - Free Islamic Zakat Calculator">
+  <meta name="twitter:description" content="Calculate your Zakat accurately based on current gold prices and Islamic scholarship.">
+  <meta name="twitter:image" content="https://zakateasy.netlify.app/assets/images/og-image.svg">
 
   <!-- Canonical -->
   <link rel="canonical" href="https://zakateasy.netlify.app/">
@@ -27,7 +34,6 @@
   <!-- Stylesheets -->
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/responsive.css">
-  <link rel="stylesheet" href="assets/css/ramadan.css">
   <link rel="stylesheet" href="assets/css/blog.css">
 
   <!-- Google AdSense -->
@@ -58,6 +64,17 @@
       "price": "0",
       "priceCurrency": "USD"
     }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "ZakatEasy",
+    "url": "https://zakateasy.netlify.app",
+    "description": "Free Islamic Zakat Calculator based on current gold and silver prices and Islamic scholarship",
+    "sameAs": []
   }
   </script>
 </head>
@@ -95,43 +112,23 @@
       <h1>Calculate Your Zakat <span class="gold-accent">with Confidence</span></h1>
       <p class="tagline">Free, accurate, and based on Islamic scholarship. No signup required.</p>
 
-      <!-- Nisab + Countdown Row -->
-      <div class="hero-cards">
-        <!-- Nisab Display -->
-        <div id="nisab-display">
-          <div class="nisab-card">
-            <h3>Current Nisab Threshold (Gold)</h3>
-            <div class="nisab-amount">Loading...</div>
-            <div class="nisab-detail">87.48 grams of gold (7.5 tola)</div>
-            <div class="nisab-updated">Fetching latest gold prices...</div>
+      <!-- Nisab Display -->
+      <div id="nisab-display">
+        <div class="nisab-card">
+          <div class="nisab-toggle">
+            <label class="nisab-toggle-option">
+              <input type="radio" name="nisab-standard" value="gold" checked>
+              <span>Gold Standard</span>
+            </label>
+            <label class="nisab-toggle-option">
+              <input type="radio" name="nisab-standard" value="silver">
+              <span>Silver Standard</span>
+            </label>
           </div>
-        </div>
-
-        <!-- Ramadan Countdown -->
-        <div class="ramadan-countdown" id="ramadan-countdown">
-          <h3 class="countdown-heading">Ramadan 2026 Countdown</h3>
-          <div class="countdown-timer" id="countdown-timer">
-            <div class="countdown-unit">
-              <span class="countdown-number" id="countdown-days">--</span>
-              <span class="countdown-label">Days</span>
-            </div>
-            <div class="countdown-unit">
-              <span class="countdown-number" id="countdown-hours">--</span>
-              <span class="countdown-label">Hours</span>
-            </div>
-            <div class="countdown-unit">
-              <span class="countdown-number" id="countdown-minutes">--</span>
-              <span class="countdown-label">Minutes</span>
-            </div>
-            <div class="countdown-unit">
-              <span class="countdown-number" id="countdown-seconds">--</span>
-              <span class="countdown-label">Seconds</span>
-            </div>
-          </div>
-          <div class="ramadan-active hidden" id="ramadan-active">
-            <h3>Ramadan Mubarak!</h3>
-            <p>May this blessed month bring you closer to Allah. Calculate and pay your Zakat today.</p>
-          </div>
+          <h3 id="nisab-heading">Current Nisab Threshold (Gold)</h3>
+          <div class="nisab-amount">Loading...</div>
+          <div class="nisab-detail">87.48 grams of gold (7.5 tola)</div>
+          <div class="nisab-updated">Fetching latest gold prices...</div>
         </div>
       </div>
     </div>
@@ -376,7 +373,6 @@
   <script src="assets/js/utils.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/calculator.js"></script>
-  <script src="assets/js/ramadan-countdown.js"></script>
   <script src="assets/js/email-capture.js"></script>
 
   <!-- Mobile Nav Toggle -->

@@ -9,6 +9,9 @@ const ZakatCalculator = {
   /**
    * Initialize the calculator on the page
    */
+  // Which nisab standard is active: 'gold' or 'silver'
+  nisabStandard: 'gold',
+
   async init() {
     this.form = document.getElementById('zakat-form');
     this.resultsSection = document.getElementById('results-section');
@@ -51,6 +54,9 @@ const ZakatCalculator = {
       });
     }
 
+    // Nisab standard toggle (gold/silver)
+    this.setupNisabToggle();
+
     // Gold/Silver unit toggle handling
     this.setupUnitToggles();
 
@@ -59,6 +65,23 @@ const ZakatCalculator = {
 
     // Update labels with currency symbol
     this.updateLabels();
+  },
+
+  /**
+   * Setup the Gold/Silver nisab standard toggle
+   */
+  setupNisabToggle() {
+    const radios = document.querySelectorAll('input[name="nisab-standard"]');
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        this.nisabStandard = radio.value;
+        this.updateNisabDisplay();
+        // Re-calculate if results are visible
+        if (this.resultsSection && !this.resultsSection.classList.contains('hidden')) {
+          this.calculate();
+        }
+      });
+    });
   },
 
   /**
@@ -147,13 +170,17 @@ const ZakatCalculator = {
 
     const info = this.nisabInfo;
     const currency = this.getCurrency();
+    const isGold = this.nisabStandard === 'gold';
 
     // Convert USD values to local currency
-    const nisabLocal = CurrencyAPI.convert(info.nisabGold);
-    const goldPriceLocal = CurrencyAPI.convert(info.goldPricePerGram);
+    const nisabLocal = CurrencyAPI.convert(isGold ? info.nisabGold : info.nisabSilver);
+    const pricePerGramLocal = CurrencyAPI.convert(isGold ? info.goldPricePerGram : info.silverPricePerGram);
+    const grams = isGold ? info.nisabGrams : info.silverNisabGrams;
+    const metalName = isGold ? 'Gold' : 'Silver';
+    const extraDetail = isGold ? '(7.5 tola)' : '(52.5 tola)';
 
     const nisabFormatted = Utils.formatCurrency(nisabLocal, currency);
-    const goldPrice = Utils.formatCurrency(goldPriceLocal, currency);
+    const priceFormatted = Utils.formatCurrency(pricePerGramLocal, currency);
     const updatedText = info.lastUpdated
       ? Utils.formatDate(info.lastUpdated)
       : 'Using estimated prices';
@@ -167,13 +194,26 @@ const ZakatCalculator = {
 
     this.nisabDisplay.innerHTML = `
       <div class="nisab-card">
-        <h3>Current Nisab Threshold (Gold)</h3>
+        <div class="nisab-toggle">
+          <label class="nisab-toggle-option">
+            <input type="radio" name="nisab-standard" value="gold" ${isGold ? 'checked' : ''}>
+            <span>Gold Standard</span>
+          </label>
+          <label class="nisab-toggle-option">
+            <input type="radio" name="nisab-standard" value="silver" ${!isGold ? 'checked' : ''}>
+            <span>Silver Standard</span>
+          </label>
+        </div>
+        <h3>Current Nisab Threshold (${metalName})</h3>
         <div class="nisab-amount">${nisabFormatted} ${currency}</div>
-        <div class="nisab-detail">${info.nisabGrams} grams @ ${goldPrice}/gram</div>
+        <div class="nisab-detail">${grams} grams of ${metalName.toLowerCase()} ${extraDetail} @ ${priceFormatted}/gram</div>
         <div class="nisab-updated">Last Updated: ${updatedText}</div>
         ${statusNote}
       </div>
     `;
+
+    // Re-bind toggle events since innerHTML was replaced
+    this.setupNisabToggle();
   },
 
   /**
@@ -181,13 +221,25 @@ const ZakatCalculator = {
    */
   showNisabError() {
     if (!this.nisabDisplay) return;
-    const fallbackNisab = CurrencyAPI.convert(7245);
+    const isGold = this.nisabStandard === 'gold';
+    const fallbackNisab = CurrencyAPI.convert(isGold ? 7245 : 1617);
     this.nisabDisplay.innerHTML = `
       <div class="nisab-card nisab-error">
-        <h3>Nisab Threshold</h3>
-        <p>Unable to load current gold prices. Using estimated Nisab of ${this.fmt(fallbackNisab)}.</p>
+        <div class="nisab-toggle">
+          <label class="nisab-toggle-option">
+            <input type="radio" name="nisab-standard" value="gold" ${isGold ? 'checked' : ''}>
+            <span>Gold Standard</span>
+          </label>
+          <label class="nisab-toggle-option">
+            <input type="radio" name="nisab-standard" value="silver" ${!isGold ? 'checked' : ''}>
+            <span>Silver Standard</span>
+          </label>
+        </div>
+        <h3>Nisab Threshold (${isGold ? 'Gold' : 'Silver'})</h3>
+        <p>Unable to load current prices. Using estimated Nisab of ${this.fmt(fallbackNisab)}.</p>
       </div>
     `;
+    this.setupNisabToggle();
   },
 
   /**
@@ -261,7 +313,11 @@ const ZakatCalculator = {
     // Gold/silver prices are in USD per gram from the API
     const goldPricePerGramUSD = info ? info.goldPricePerGram : 161.33;
     const silverPricePerGramUSD = info ? info.silverPricePerGram : 2.64;
-    const nisabUSD = info ? info.nisabGold : 7245;
+
+    // Determine which nisab to use based on selected standard
+    const nisabUSD = this.nisabStandard === 'silver'
+      ? (info ? info.nisabSilver : 1617)
+      : (info ? info.nisabGold : 7245);
 
     // Convert to local currency
     const goldPricePerGramLocal = CurrencyAPI.convert(goldPricePerGramUSD);
@@ -306,6 +362,7 @@ const ZakatCalculator = {
       totalLiabilities,
       netWealth,
       nisabThreshold: nisabLocal,
+      nisabStandard: this.nisabStandard,
       meetsNisab,
       zakatOwed,
       zakatRate: this.ZAKAT_RATE
@@ -414,11 +471,11 @@ const ZakatCalculator = {
         </div>
 
         <div class="results-disclaimer">
-          <p><strong>Disclaimer:</strong> This calculation is based on the Hanafi method using
-          87.48 grams of gold as the Nisab threshold. Please consult a qualified Islamic scholar
-          for specific circumstances. <a href="legal/disclaimer.html">Read full disclaimer</a>.</p>
-          <p class="reference">Based on Quran 9:60 and scholarly consensus.
-          Reference: 87.48 grams of gold (7.5 tola).</p>
+          <p><strong>Disclaimer:</strong> This calculation uses the <strong>${b.nisabStandard === 'silver' ? 'Silver' : 'Gold'} Standard</strong> Nisab threshold
+          (${b.nisabStandard === 'silver' ? '612.36g of silver' : '87.48g of gold'}).
+          Please consult a qualified Islamic scholar for specific circumstances.
+          <a href="legal/disclaimer.html">Read full disclaimer</a>.</p>
+          <p class="reference">Based on Quran 9:60 and scholarly consensus.</p>
         </div>
       </div>
     `;
