@@ -7,6 +7,7 @@
   <meta name="description" content="Key dates for Zakat al-Mal and Zakat al-Fitr during Ramadan 2026. Understand the deadlines and differences between these two obligations.">
   <meta name="keywords" content="last day pay zakat ramadan 2026, zakat deadline, zakat al fitr deadline, ramadan 2026 dates, when to pay fitrana">
 
+  <meta property="og:site_name" content="ZakatEasy">
   <meta property="og:title" content="When Is the Last Day to Pay Zakat for Ramadan 2026?">
   <meta property="og:description" content="Key dates and deadlines for Zakat al-Mal and Zakat al-Fitr during Ramadan 2026.">
   <meta property="og:type" content="article">
@@ -395,6 +396,27 @@
         });
       }
     });
+  </script>
+  <!-- Ad Visibility Handler -->
+  <script>
+    (function () {
+      function hideUnfilledAds() {
+        document.querySelectorAll('ins.adsbygoogle').forEach(function (ins) {
+          var status = ins.getAttribute('data-ad-status');
+          if (status === 'unfilled' || status === 'error') {
+            var container = ins.closest('.ad-container');
+            if (container) container.classList.add('ad-hidden');
+          }
+        });
+      }
+      // Watch for AdSense setting data-ad-status on ins elements
+      var observer = new MutationObserver(hideUnfilledAds);
+      document.querySelectorAll('ins.adsbygoogle').forEach(function (ins) {
+        observer.observe(ins, { attributes: true, attributeFilter: ['data-ad-status'] });
+      });
+      // Also check after a short delay (fallback for slow ad loads)
+      setTimeout(hideUnfilledAds, 4000);
+    })();
   </script>
 </body>
 </html>

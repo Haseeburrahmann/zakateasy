@@ -7,6 +7,7 @@
   <meta name="description" content="A trusted guide to the most reputable Islamic charities accepting Zakat donations in 2026. Compare organizations by focus area, transparency, and global reach.">
   <meta name="keywords" content="best islamic charities, zakat donation, where to pay zakat, islamic relief, zakat foundation, ramadan charity 2026">
 
+  <meta property="og:site_name" content="ZakatEasy">
   <meta property="og:title" content="Best Islamic Charities for Zakat 2026">
   <meta property="og:description" content="Compare the most reputable Islamic charities for your Zakat donations. Focus areas, transparency, and global reach.">
   <meta property="og:type" content="article">
@@ -493,6 +494,27 @@
         });
       }
     });
+  </script>
+  <!-- Ad Visibility Handler -->
+  <script>
+    (function () {
+      function hideUnfilledAds() {
+        document.querySelectorAll('ins.adsbygoogle').forEach(function (ins) {
+          var status = ins.getAttribute('data-ad-status');
+          if (status === 'unfilled' || status === 'error') {
+            var container = ins.closest('.ad-container');
+            if (container) container.classList.add('ad-hidden');
+          }
+        });
+      }
+      // Watch for AdSense setting data-ad-status on ins elements
+      var observer = new MutationObserver(hideUnfilledAds);
+      document.querySelectorAll('ins.adsbygoogle').forEach(function (ins) {
+        observer.observe(ins, { attributes: true, attributeFilter: ['data-ad-status'] });
+      });
+      // Also check after a short delay (fallback for slow ad loads)
+      setTimeout(hideUnfilledAds, 4000);
+    })();
   </script>
 </body>
 </html>

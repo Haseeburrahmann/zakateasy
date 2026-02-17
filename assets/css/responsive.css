@@ -84,6 +84,21 @@
     padding: 32px 0;
   }
 
+  /* Stack form and results vertically on mobile */
+  .calc-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .calc-layout-results {
+    position: static; /* disable sticky on mobile */
+  }
+
+  .results-placeholder {
+    min-height: 160px;
+    padding: 24px;
+  }
+
   .calc-form {
     padding: 24px 20px;
     border-radius: var(--radius-md);
@@ -273,6 +288,18 @@
   }
 }
 
+/* --- Medium screens: stack layout at 900px --- */
+@media (max-width: 900px) {
+  .calc-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .calc-layout-results {
+    position: static;
+  }
+}
+
 /* --- Large screens (min-width: 1200px) --- */
 @media (min-width: 1200px) {
   .hero h1 {
@@ -285,6 +312,10 @@
 
   .calc-form {
     padding: 44px;
+  }
+
+  .calc-layout {
+    gap: 40px;
   }
 }
 

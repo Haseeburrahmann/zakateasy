@@ -279,7 +279,10 @@ const ZakatCalculator = {
     const values = this.getInputValues();
     const breakdown = this.computeBreakdown(values);
     this.displayResults(breakdown);
-    Utils.scrollTo('#results-section');
+    // On mobile (single column), scroll to results; on desktop results are inline
+    if (window.innerWidth < 900) {
+      Utils.scrollTo('#results-section');
+    }
   },
 
   /**

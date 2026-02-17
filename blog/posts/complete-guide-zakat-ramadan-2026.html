@@ -7,6 +7,7 @@
   <meta name="description" content="Learn everything about paying Zakat during Ramadan 2026. Step-by-step calculation guide, current Nisab threshold, eligible assets, and recommended charities.">
   <meta name="keywords" content="zakat ramadan 2026, zakat calculator, ramadan zakat guide, nisab 2026, how to calculate zakat">
 
+  <meta property="og:site_name" content="ZakatEasy">
   <meta property="og:title" content="Complete Guide to Zakat During Ramadan 2026">
   <meta property="og:description" content="Step-by-step Zakat calculation guide for Ramadan 2026 with current Nisab, eligible assets, and charity recommendations.">
   <meta property="og:type" content="article">
@@ -409,6 +410,27 @@
         });
       }
     });
+  </script>
+  <!-- Ad Visibility Handler -->
+  <script>
+    (function () {
+      function hideUnfilledAds() {
+        document.querySelectorAll('ins.adsbygoogle').forEach(function (ins) {
+          var status = ins.getAttribute('data-ad-status');
+          if (status === 'unfilled' || status === 'error') {
+            var container = ins.closest('.ad-container');
+            if (container) container.classList.add('ad-hidden');
+          }
+        });
+      }
+      // Watch for AdSense setting data-ad-status on ins elements
+      var observer = new MutationObserver(hideUnfilledAds);
+      document.querySelectorAll('ins.adsbygoogle').forEach(function (ins) {
+        observer.observe(ins, { attributes: true, attributeFilter: ['data-ad-status'] });
+      });
+      // Also check after a short delay (fallback for slow ad loads)
+      setTimeout(hideUnfilledAds, 4000);
+    })();
   </script>
 </body>
 </html>
