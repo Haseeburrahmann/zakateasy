@@ -155,6 +155,7 @@ const ZakatCalculator = {
   async loadNisabInfo() {
     try {
       this.nisabInfo = await MetalsAPI.getNisabInfo();
+      window._nisabInfo = this.nisabInfo; // expose for SEO section
       this.updateNisabDisplay();
     } catch (error) {
       console.error('Failed to load Nisab info:', error);

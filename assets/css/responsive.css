@@ -175,6 +175,21 @@
     width: 100%;
   }
 
+  /* SEO Content Sections */
+  .seo-section {
+    padding: 36px 0;
+  }
+
+  .seo-cards,
+  .seo-cards-3 {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .seo-section h2 {
+    font-size: 1.5rem;
+  }
+
   /* Content pages */
   .page-header {
     padding: 32px 20px;
