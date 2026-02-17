@@ -1,0 +1,32 @@
+# ZakatEasy
+
+> Free Islamic Zakat Calculator — Calculate Zakat on gold, silver, cash and investments using live prices.
+
+ZakatEasy is a free online Zakat calculator that helps Muslims accurately calculate their annual Zakat obligation. It supports multiple currencies, gold and silver Nisab standards, and provides real-time metal prices via a secure API.
+
+## Features
+
+- Zakat Calculator: calculates 2.5% of net zakatable wealth above the Nisab threshold
+- Gold Standard Nisab: based on 87.48 grams of gold (7.5 tola)
+- Silver Standard Nisab: based on 612.36 grams of silver (52.5 tola)
+- Multi-currency support: auto-detects user location and converts to local currency (USD, GBP, INR, AED, PKR, etc.)
+- Live gold and silver prices updated daily
+- Covers: cash, gold, silver, investments, business assets, and deductible liabilities
+- No signup required — all calculations happen in the browser
+
+## Pages
+
+- [Zakat Calculator](https://zakateasy.netlify.app/) — Main calculator with gold/silver Nisab toggle
+- [What is Zakat?](https://zakateasy.netlify.app/what-is-zakat.html) — Complete guide to Zakat in Islam
+- [FAQ](https://zakateasy.netlify.app/faq.html) — Common Zakat questions answered
+- [Blog](https://zakateasy.netlify.app/blog/) — Articles on Zakat, Ramadan giving, and Islamic finance
+- [About](https://zakateasy.netlify.app/about.html) — About ZakatEasy
+
+## Key Facts
+
+- Zakat rate: 2.5% (1/40th) of net zakatable wealth
+- Nisab (gold): 87.48 grams of gold
+- Nisab (silver): 612.36 grams of silver
+- Hawl: one full lunar year of holding wealth above Nisab
+- Zakat applies to: cash, gold, silver, stocks, business inventory
+- Zakat does NOT apply to: primary home, personal vehicle, clothing, furniture
