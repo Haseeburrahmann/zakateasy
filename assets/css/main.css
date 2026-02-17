@@ -258,26 +258,24 @@ p {
   cursor: pointer;
   padding: 8px 18px;
   border-radius: var(--radius-sm);
-  border: 2px solid rgba(255,255,255,0.5);
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.75);
+  border: 2px solid #ffffff;
+  background: transparent;
+  color: #ffffff;
   font-size: 0.85rem;
   font-weight: 500;
   transition: all 0.2s;
 }
 
 .nisab-toggle-option:hover {
-  border-color: rgba(255,255,255,0.75);
-  color: #ffffff;
-  background: rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.1);
 }
 
 .nisab-toggle-option:has(input:checked) {
-  background: rgba(212,175,55,0.2);
+  background: var(--color-secondary);
   border-color: var(--color-secondary);
-  color: var(--color-secondary);
+  color: #1a1a1a;
   font-weight: 700;
-  box-shadow: 0 0 0 1px var(--color-secondary);
+  box-shadow: none;
 }
 
 .nisab-toggle-option input[type="radio"] {
