@@ -41,6 +41,14 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-R8S4MBWFTK');
+    // Track exact broken URL so we can find and fix it in GA4 Events
+    window.addEventListener('load', function() {
+      gtag('event', 'page_not_found', {
+        page_location: window.location.href,
+        page_path: window.location.pathname,
+        page_referrer: document.referrer
+      });
+    });
   </script>
 </head>
 <body>
