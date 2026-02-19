@@ -1,14 +1,14 @@
 /**
  * ZakatEasy - Ramadan 2026 Countdown Timer
- * Ramadan 1447 AH expected to begin around February 28, 2026
+ * Ramadan 1447 AH began around February 19, 2026 (confirmed by moon sighting)
  */
 
 const RamadanCountdown = {
-  // Expected Ramadan 2026 dates (Gregorian approximation of Ramadan 1447 AH)
-  // These may shift by 1-2 days based on moon sighting
-  RAMADAN_START: new Date('2026-02-28T00:00:00'),
-  RAMADAN_END: new Date('2026-03-30T00:00:00'),
-  EID_DATE: new Date('2026-03-30T00:00:00'),
+  // Ramadan 2026 dates — began Feb 19 in most countries (confirmed)
+  // Eid al-Fitr expected around March 20-21, 2026
+  RAMADAN_START: new Date('2026-02-19T00:00:00'),
+  RAMADAN_END: new Date('2026-03-21T00:00:00'),
+  EID_DATE: new Date('2026-03-21T00:00:00'),
 
   container: null,
   timerEl: null,
