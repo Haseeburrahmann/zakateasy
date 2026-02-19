@@ -9,6 +9,19 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+# Force canonical domain — redirect old Netlify subdomain and www to zakateasy.org
+[[redirects]]
+  from = "https://zakateasy.netlify.app/*"
+  to = "https://zakateasy.org/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.zakateasy.org/*"
+  to = "https://zakateasy.org/:splat"
+  status = 301
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]
