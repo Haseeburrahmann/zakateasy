@@ -18,6 +18,8 @@ ZakatEasy is a free online Zakat calculator that helps Muslims accurately calcul
 
 - [Zakat Calculator](https://zakateasy.org/) — Main calculator with gold/silver Nisab toggle
 - [What is Zakat?](https://zakateasy.org/what-is-zakat.html) — Complete guide to Zakat in Islam
+- [Ramadan 2026 Hub](https://zakateasy.org/ramadan.html) — Key dates, Laylat al-Qadr, Zakat al-Fitr, three ashras, and Ramadan articles
+- [Ramadan Duas 2026](https://zakateasy.org/duas.html) — Iftar dua, Suhoor dua, Laylat al-Qadr dua, Taraweeh, daily dhikr with Arabic and transliteration
 - [FAQ](https://zakateasy.org/faq.html) — Common Zakat questions answered
 - [Blog](https://zakateasy.org/blog/) — Articles on Zakat, Ramadan giving, and Islamic finance
 - [About](https://zakateasy.org/about.html) — About ZakatEasy
