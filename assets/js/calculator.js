@@ -193,9 +193,19 @@ const ZakatCalculator = {
       statusNote = '<span class="nisab-warning">Prices may be outdated. Will refresh when connection is available.</span>';
     }
 
-    // Check if user already has manual overrides set
-    const existingManualGold = document.getElementById('manual-gold-price')?.value || '';
-    const existingManualSilver = document.getElementById('manual-silver-price')?.value || '';
+    // Preserve any existing manual price the user already typed
+    const existingManualPrice = document.getElementById('manual-price-local')?.value || '';
+
+    // Context-aware label — matches selected standard and active currency
+    const manualLabel = isGold
+      ? `Your local gold price per gram (${currency})`
+      : `Your local silver price per gram (${currency})`;
+
+    // Helpful example hint based on standard
+    const manualPlaceholder = isGold ? 'e.g. 16000' : 'e.g. 275';
+    const manualHint = isGold
+      ? `Check your local jeweller or gold app. Enter the price of 1 gram of gold in ${currency}.`
+      : `Enter the price of 1 gram of silver in ${currency}.`;
 
     this.nisabDisplay.innerHTML = `
       <div class="nisab-card">
@@ -216,32 +226,28 @@ const ZakatCalculator = {
         ${statusNote}
         <div class="manual-price-toggle">
           <button type="button" class="manual-price-toggle-btn" id="toggle-manual-price" aria-expanded="false">
-            ✏️ Use my own gold/silver price
+            ✏️ My price is different
           </button>
           <div class="manual-price-fields hidden" id="manual-price-fields">
-            <p class="manual-price-note">Enter your local gold/silver price per gram in USD. Leave blank to use live prices.</p>
+            <p class="manual-price-note">${manualHint}</p>
             <div class="manual-price-row">
-              <label for="manual-gold-price">Gold price / gram (USD)</label>
-              <input type="number" id="manual-gold-price" placeholder="e.g. 95.50" min="0" step="0.01" value="${existingManualGold}">
-            </div>
-            <div class="manual-price-row">
-              <label for="manual-silver-price">Silver price / gram (USD)</label>
-              <input type="number" id="manual-silver-price" placeholder="e.g. 1.05" min="0" step="0.01" value="${existingManualSilver}">
+              <label for="manual-price-local">${manualLabel}</label>
+              <input type="number" id="manual-price-local" placeholder="${manualPlaceholder}" min="0" step="0.01" value="${existingManualPrice}">
             </div>
           </div>
         </div>
       </div>
     `;
 
-    // Re-bind toggle events since innerHTML was replaced
+    // Re-bind nisab standard toggle since innerHTML was replaced
     this.setupNisabToggle();
 
-    // Manual price toggle
+    // Manual price toggle open/close
     const toggleBtn = document.getElementById('toggle-manual-price');
     const fieldsDiv = document.getElementById('manual-price-fields');
     if (toggleBtn && fieldsDiv) {
-      // If values were already set, keep fields open
-      if (existingManualGold || existingManualSilver) {
+      // Keep fields open if user had already entered a value
+      if (existingManualPrice) {
         fieldsDiv.classList.remove('hidden');
         toggleBtn.setAttribute('aria-expanded', 'true');
         toggleBtn.classList.add('active');
@@ -330,15 +336,11 @@ const ZakatCalculator = {
   getInputValues() {
     const getValue = (id) => Utils.parseNumber(document.getElementById(id)?.value);
 
-    // Manual gold price override (if user set one)
-    const manualGoldInput = document.getElementById('manual-gold-price');
-    const manualGoldPrice = manualGoldInput && manualGoldInput.value
-      ? Utils.parseNumber(manualGoldInput.value)
-      : null;
-
-    const manualSilverInput = document.getElementById('manual-silver-price');
-    const manualSilverPrice = manualSilverInput && manualSilverInput.value
-      ? Utils.parseNumber(manualSilverInput.value)
+    // Manual price override — user enters local currency price per gram
+    // for whichever standard (gold or silver) is currently selected
+    const manualPriceInput = document.getElementById('manual-price-local');
+    const manualPriceLocal = manualPriceInput && manualPriceInput.value
+      ? Utils.parseNumber(manualPriceInput.value)
       : null;
 
     return {
@@ -354,8 +356,7 @@ const ZakatCalculator = {
       otherAssets: getValue('other-assets'),
       debts: getValue('debts'),
       unpaidBills: getValue('unpaid-bills'),
-      manualGoldPricePerGram: manualGoldPrice,   // USD per gram, user-supplied
-      manualSilverPricePerGram: manualSilverPrice // USD per gram, user-supplied
+      manualPriceLocal  // local currency per gram for the active standard
     };
   },
 
@@ -368,26 +369,30 @@ const ZakatCalculator = {
   computeBreakdown(values) {
     const info = this.nisabInfo;
 
-    // Use manual override if provided, otherwise use API price
-    const goldPricePerGramUSD = values.manualGoldPricePerGram
-      ? values.manualGoldPricePerGram
-      : (info ? info.goldPricePerGram : 161.33);
+    // Determine prices per gram in local currency
+    // If user entered a manual price, it's already in local currency — use directly.
+    // Otherwise convert from USD API price.
+    const apiGoldPerGramLocal = CurrencyAPI.convert(info ? info.goldPricePerGram : 161.33);
+    const apiSilverPerGramLocal = CurrencyAPI.convert(info ? info.silverPricePerGram : 2.64);
 
-    const silverPricePerGramUSD = values.manualSilverPricePerGram
-      ? values.manualSilverPricePerGram
-      : (info ? info.silverPricePerGram : 2.64);
+    const usingManualPrice = !!values.manualPriceLocal;
+    const isGoldStandard = this.nisabStandard !== 'silver';
 
-    // Recalculate Nisab using the (possibly overridden) price
-    const nisabGoldUSD = goldPricePerGramUSD * 87.48;
-    const nisabSilverUSD = silverPricePerGramUSD * 612.36;
+    // Active metal price per gram in local currency
+    const manualActivePerGramLocal = usingManualPrice ? values.manualPriceLocal : null;
 
-    // Determine which nisab to use based on selected standard
-    const nisabUSD = this.nisabStandard === 'silver' ? nisabSilverUSD : nisabGoldUSD;
+    const goldPricePerGramLocal = (usingManualPrice && isGoldStandard)
+      ? manualActivePerGramLocal
+      : apiGoldPerGramLocal;
 
-    // Convert to local currency
-    const goldPricePerGramLocal = CurrencyAPI.convert(goldPricePerGramUSD);
-    const silverPricePerGramLocal = CurrencyAPI.convert(silverPricePerGramUSD);
-    const nisabLocal = CurrencyAPI.convert(nisabUSD);
+    const silverPricePerGramLocal = (usingManualPrice && !isGoldStandard)
+      ? manualActivePerGramLocal
+      : apiSilverPerGramLocal;
+
+    // Nisab in local currency using the active metal's price
+    const nisabGoldLocal = goldPricePerGramLocal * 87.48;
+    const nisabSilverLocal = silverPricePerGramLocal * 612.36;
+    const nisabLocal = isGoldStandard ? nisabGoldLocal : nisabSilverLocal;
 
     // Convert gold/silver to local currency value if entered in grams
     const goldValue = values.goldUnit === 'grams'
@@ -434,8 +439,7 @@ const ZakatCalculator = {
       meetsNisab,
       zakatOwed,
       zakatRate: this.ZAKAT_RATE,
-      usingManualGoldPrice: !!values.manualGoldPricePerGram,
-      usingManualSilverPrice: !!values.manualSilverPricePerGram
+      usingManualPrice
     };
   },
 
