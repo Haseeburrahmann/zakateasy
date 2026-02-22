@@ -63,6 +63,9 @@ const ZakatCalculator = {
     // Format inputs on blur
     this.setupInputFormatting();
 
+    // Real-time calculation: recalculate as user types (debounced)
+    this.setupLiveCalculation();
+
     // Update labels with currency symbol
     this.updateLabels();
   },
@@ -140,14 +143,19 @@ const ZakatCalculator = {
     const currencyLabel = code === 'USD' ? '$' : code;
 
     if (goldLabel) {
+      // Preserve the help-tip button when updating label text
+      const helpBtn = goldLabel.querySelector('.help-tip');
       goldLabel.textContent = (goldUnit && goldUnit.value === 'grams')
-        ? 'Gold (in grams)'
+        ? 'Gold (weight in grams)'
         : `Gold (market value in ${currencyLabel})`;
+      if (helpBtn) goldLabel.appendChild(helpBtn);
     }
     if (silverLabel) {
+      const helpBtn = silverLabel.querySelector('.help-tip');
       silverLabel.textContent = (silverUnit && silverUnit.value === 'grams')
-        ? 'Silver (in grams)'
+        ? 'Silver (weight in grams)'
         : `Silver (market value in ${currencyLabel})`;
+      if (helpBtn) silverLabel.appendChild(helpBtn);
     }
   },
 
@@ -344,6 +352,27 @@ const ZakatCalculator = {
       input.addEventListener('blur', () => {
         if (input.value === '') input.value = '0';
       });
+    });
+  },
+
+  /**
+   * Real-time calculation: recalculate as user types any value
+   */
+  setupLiveCalculation() {
+    let debounceTimer;
+    const recalc = () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        // Only recalculate if results are already visible (user has calculated once)
+        if (this.resultsSection && !this.resultsSection.classList.contains('hidden')) {
+          this.calculate();
+        }
+      }, 300);
+    };
+
+    // Listen on all number inputs in the form
+    this.form.querySelectorAll('input[type="number"]').forEach(input => {
+      input.addEventListener('input', recalc);
     });
   },
 
