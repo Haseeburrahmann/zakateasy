@@ -1369,16 +1369,17 @@ p {
 
 /* ============================================
    Manual Gold/Silver Price Override
+   (sits inside white .nisab-card — use dark colours)
    ============================================ */
 .manual-price-toggle {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid rgba(255,255,255,0.15);
+  border-top: 1px solid rgba(15,81,50,0.15);
 }
 .manual-price-toggle-btn {
   background: none;
-  border: 1px solid rgba(255,255,255,0.3);
-  color: rgba(255,255,255,0.85);
+  border: 1px solid rgba(15,81,50,0.35);
+  color: var(--color-primary);
   font-size: 0.82rem;
   padding: 5px 12px;
   border-radius: 20px;
@@ -1387,9 +1388,9 @@ p {
 }
 .manual-price-toggle-btn:hover,
 .manual-price-toggle-btn.active {
-  background: rgba(255,255,255,0.12);
+  background: var(--color-primary);
   color: #fff;
-  border-color: rgba(255,255,255,0.5);
+  border-color: var(--color-primary);
 }
 .manual-price-fields {
   margin-top: 10px;
@@ -1400,7 +1401,7 @@ p {
 .manual-price-fields.hidden { display: none; }
 .manual-price-note {
   font-size: 0.78rem;
-  color: rgba(255,255,255,0.65);
+  color: var(--color-text-muted);
   margin-bottom: 4px;
 }
 .manual-price-row {
@@ -1411,7 +1412,7 @@ p {
 }
 .manual-price-row label {
   font-size: 0.8rem;
-  color: rgba(255,255,255,0.8);
+  color: var(--color-text);
   min-width: 170px;
   flex-shrink: 0;
 }
@@ -1419,16 +1420,17 @@ p {
   width: 130px;
   padding: 5px 9px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(255,255,255,0.3);
-  background: rgba(255,255,255,0.1);
-  color: #fff;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: var(--color-text);
   font-size: 0.85rem;
 }
-.manual-price-row input::placeholder { color: rgba(255,255,255,0.4); }
+.manual-price-row input::placeholder { color: #aaa; }
 .manual-price-row input:focus {
   outline: none;
   border-color: var(--color-secondary);
-  background: rgba(255,255,255,0.15);
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(212,175,55,0.2);
 }
 
 /* --- Utility Classes --- */
