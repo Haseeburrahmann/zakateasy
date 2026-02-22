@@ -321,6 +321,13 @@ p {
   font-size: 0.8rem;
   font-style: italic;
 }
+.nisab-note {
+  display: block;
+  margin-top: 8px;
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-style: italic;
+}
 
 .nisab-error {
   border: 2px solid var(--color-warning);
