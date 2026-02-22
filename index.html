@@ -281,10 +281,24 @@
             </div>
 
             <div class="form-group">
+              <label for="receivables">Money Owed to You</label>
+              <input type="number" id="receivables" name="receivables" value="0" min="0" step="0.01"
+                     placeholder="Enter amount owed to you">
+              <span class="input-hint">Loans given to others you expect back, unpaid salary, tax refunds due</span>
+            </div>
+
+            <div class="form-group">
+              <label for="crypto">Cryptocurrency</label>
+              <input type="number" id="crypto" name="crypto" value="0" min="0" step="0.01"
+                     placeholder="Enter current market value">
+              <span class="input-hint">Current market value of Bitcoin, Ethereum, and other crypto holdings</span>
+            </div>
+
+            <div class="form-group">
               <label for="other-assets">Other Zakatable Assets</label>
               <input type="number" id="other-assets" name="other-assets" value="0" min="0" step="0.01"
                      placeholder="Enter other asset value">
-              <span class="input-hint">Any other wealth subject to Zakat (e.g., rental income receivable)</span>
+              <span class="input-hint">Any other wealth subject to Zakat (e.g., rental income, pension savings)</span>
             </div>
 
             <!-- Divider -->

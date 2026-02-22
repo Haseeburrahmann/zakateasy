@@ -193,6 +193,10 @@ const ZakatCalculator = {
       statusNote = '<span class="nisab-warning">Prices may be outdated. Will refresh when connection is available.</span>';
     }
 
+    // Check if user already has manual overrides set
+    const existingManualGold = document.getElementById('manual-gold-price')?.value || '';
+    const existingManualSilver = document.getElementById('manual-silver-price')?.value || '';
+
     this.nisabDisplay.innerHTML = `
       <div class="nisab-card">
         <div class="nisab-toggle">
@@ -210,8 +214,46 @@ const ZakatCalculator = {
         <div class="nisab-detail">${grams} grams of ${metalName.toLowerCase()} ${extraDetail} @ ${priceFormatted}/gram</div>
         <div class="nisab-updated">Last Updated: ${updatedText}</div>
         ${statusNote}
+        <div class="manual-price-toggle">
+          <button type="button" class="manual-price-toggle-btn" id="toggle-manual-price" aria-expanded="false">
+            ✏️ Use my own gold/silver price
+          </button>
+          <div class="manual-price-fields hidden" id="manual-price-fields">
+            <p class="manual-price-note">Enter your local gold/silver price per gram in USD. Leave blank to use live prices.</p>
+            <div class="manual-price-row">
+              <label for="manual-gold-price">Gold price / gram (USD)</label>
+              <input type="number" id="manual-gold-price" placeholder="e.g. 95.50" min="0" step="0.01" value="${existingManualGold}">
+            </div>
+            <div class="manual-price-row">
+              <label for="manual-silver-price">Silver price / gram (USD)</label>
+              <input type="number" id="manual-silver-price" placeholder="e.g. 1.05" min="0" step="0.01" value="${existingManualSilver}">
+            </div>
+          </div>
+        </div>
       </div>
     `;
+
+    // Re-bind toggle events since innerHTML was replaced
+    this.setupNisabToggle();
+
+    // Manual price toggle
+    const toggleBtn = document.getElementById('toggle-manual-price');
+    const fieldsDiv = document.getElementById('manual-price-fields');
+    if (toggleBtn && fieldsDiv) {
+      // If values were already set, keep fields open
+      if (existingManualGold || existingManualSilver) {
+        fieldsDiv.classList.remove('hidden');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        toggleBtn.classList.add('active');
+      }
+      toggleBtn.addEventListener('click', () => {
+        const isOpen = !fieldsDiv.classList.contains('hidden');
+        fieldsDiv.classList.toggle('hidden', isOpen);
+        toggleBtn.setAttribute('aria-expanded', String(!isOpen));
+        toggleBtn.classList.toggle('active', !isOpen);
+      });
+    }
+    return; // skip the duplicate setupNisabToggle below
 
     // Re-bind toggle events since innerHTML was replaced
     this.setupNisabToggle();
@@ -292,6 +334,17 @@ const ZakatCalculator = {
   getInputValues() {
     const getValue = (id) => Utils.parseNumber(document.getElementById(id)?.value);
 
+    // Manual gold price override (if user set one)
+    const manualGoldInput = document.getElementById('manual-gold-price');
+    const manualGoldPrice = manualGoldInput && manualGoldInput.value
+      ? Utils.parseNumber(manualGoldInput.value)
+      : null;
+
+    const manualSilverInput = document.getElementById('manual-silver-price');
+    const manualSilverPrice = manualSilverInput && manualSilverInput.value
+      ? Utils.parseNumber(manualSilverInput.value)
+      : null;
+
     return {
       cash: getValue('cash'),
       goldAmount: getValue('gold'),
@@ -300,9 +353,13 @@ const ZakatCalculator = {
       silverUnit: document.getElementById('silver-unit')?.value || 'value',
       investments: getValue('investments'),
       businessAssets: getValue('business-assets'),
+      receivables: getValue('receivables'),
+      crypto: getValue('crypto'),
       otherAssets: getValue('other-assets'),
       debts: getValue('debts'),
-      unpaidBills: getValue('unpaid-bills')
+      unpaidBills: getValue('unpaid-bills'),
+      manualGoldPricePerGram: manualGoldPrice,   // USD per gram, user-supplied
+      manualSilverPricePerGram: manualSilverPrice // USD per gram, user-supplied
     };
   },
 
@@ -314,14 +371,22 @@ const ZakatCalculator = {
    */
   computeBreakdown(values) {
     const info = this.nisabInfo;
-    // Gold/silver prices are in USD per gram from the API
-    const goldPricePerGramUSD = info ? info.goldPricePerGram : 161.33;
-    const silverPricePerGramUSD = info ? info.silverPricePerGram : 2.64;
+
+    // Use manual override if provided, otherwise use API price
+    const goldPricePerGramUSD = values.manualGoldPricePerGram
+      ? values.manualGoldPricePerGram
+      : (info ? info.goldPricePerGram : 161.33);
+
+    const silverPricePerGramUSD = values.manualSilverPricePerGram
+      ? values.manualSilverPricePerGram
+      : (info ? info.silverPricePerGram : 2.64);
+
+    // Recalculate Nisab using the (possibly overridden) price
+    const nisabGoldUSD = goldPricePerGramUSD * 87.48;
+    const nisabSilverUSD = silverPricePerGramUSD * 612.36;
 
     // Determine which nisab to use based on selected standard
-    const nisabUSD = this.nisabStandard === 'silver'
-      ? (info ? info.nisabSilver : 1617)
-      : (info ? info.nisabGold : 7245);
+    const nisabUSD = this.nisabStandard === 'silver' ? nisabSilverUSD : nisabGoldUSD;
 
     // Convert to local currency
     const goldPricePerGramLocal = CurrencyAPI.convert(goldPricePerGramUSD);
@@ -339,7 +404,8 @@ const ZakatCalculator = {
 
     // Calculate totals (all in local currency)
     const totalAssets = values.cash + goldValue + silverValue
-      + values.investments + values.businessAssets + values.otherAssets;
+      + values.investments + values.businessAssets
+      + values.receivables + values.crypto + values.otherAssets;
 
     const totalLiabilities = values.debts + values.unpaidBills;
 
@@ -356,6 +422,8 @@ const ZakatCalculator = {
         silver: silverValue,
         investments: values.investments,
         businessAssets: values.businessAssets,
+        receivables: values.receivables,
+        crypto: values.crypto,
         otherAssets: values.otherAssets
       },
       liabilities: {
@@ -369,7 +437,9 @@ const ZakatCalculator = {
       nisabStandard: this.nisabStandard,
       meetsNisab,
       zakatOwed,
-      zakatRate: this.ZAKAT_RATE
+      zakatRate: this.ZAKAT_RATE,
+      usingManualGoldPrice: !!values.manualGoldPricePerGram,
+      usingManualSilverPrice: !!values.manualSilverPricePerGram
     };
   },
 
@@ -430,6 +500,14 @@ const ZakatCalculator = {
             <div class="breakdown-row">
               <span>Business Assets</span>
               <span>${f(b.assets.businessAssets)}</span>
+            </div>
+            <div class="breakdown-row">
+              <span>Money Owed to You</span>
+              <span>${f(b.assets.receivables)}</span>
+            </div>
+            <div class="breakdown-row">
+              <span>Cryptocurrency</span>
+              <span>${f(b.assets.crypto)}</span>
             </div>
             <div class="breakdown-row">
               <span>Other Assets</span>

@@ -13,6 +13,7 @@ const BlogUtils = {
     this.initFilters();
     this.initShareButtons();
     this.initTOCScroll();
+    this.initStickyCTA();
   },
 
   /**
@@ -229,6 +230,66 @@ const BlogUtils = {
     }, { rootMargin: '-80px 0px -60% 0px' });
 
     headings.forEach(h => observer.observe(h));
+  }
+};
+
+  /**
+   * Sticky CTA bar — appears after user scrolls 40% of article
+   * Links back to the Zakat Calculator on the homepage
+   */
+  initStickyCTA() {
+    // Only run on blog post pages (has .post-content)
+    if (!document.querySelector('.post-content')) return;
+
+    // Determine the correct path depth to index.html
+    const depth = window.location.pathname.split('/').filter(Boolean).length;
+    let calcHref = '../../index.html';
+    if (depth === 1) calcHref = 'index.html';
+    else if (depth === 2) calcHref = '../index.html';
+
+    // Create the bar
+    const bar = document.createElement('div');
+    bar.id = 'sticky-calc-cta';
+    bar.setAttribute('role', 'complementary');
+    bar.setAttribute('aria-label', 'Zakat Calculator');
+    bar.innerHTML = `
+      <div class="sticky-cta-inner">
+        <span class="sticky-cta-text">Ready to calculate your Zakat?</span>
+        <a href="${calcHref}" class="sticky-cta-btn">Calculate Now — It's Free ↗</a>
+        <button class="sticky-cta-close" aria-label="Dismiss">&times;</button>
+      </div>
+    `;
+    document.body.appendChild(bar);
+
+    const closeBtn = bar.querySelector('.sticky-cta-close');
+    let dismissed = false;
+
+    // Dismiss handler
+    closeBtn.addEventListener('click', () => {
+      dismissed = true;
+      bar.classList.remove('sticky-cta-visible');
+      // Remember for this session so it doesn't pop back up
+      try { sessionStorage.setItem('zakateasy_cta_dismissed', '1'); } catch(e) {}
+    });
+
+    // Don't show if already dismissed this session
+    try {
+      if (sessionStorage.getItem('zakateasy_cta_dismissed')) return;
+    } catch(e) {}
+
+    // Show after 40% scroll depth
+    const onScroll = () => {
+      if (dismissed) return;
+      const scrolled = window.scrollY + window.innerHeight;
+      const total = document.documentElement.scrollHeight;
+      if (scrolled / total >= 0.40) {
+        bar.classList.add('sticky-cta-visible');
+      } else {
+        bar.classList.remove('sticky-cta-visible');
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
   }
 };
 
