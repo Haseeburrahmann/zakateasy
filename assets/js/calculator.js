@@ -63,11 +63,17 @@ const ZakatCalculator = {
     // Format inputs on blur
     this.setupInputFormatting();
 
+    // Collapsible card toggles
+    this.setupCardToggles();
+
     // Real-time calculation: recalculate as user types (debounced)
     this.setupLiveCalculation();
 
     // Update labels with currency symbol
     this.updateLabels();
+
+    // Initial progress bar state
+    this.updateProgress();
   },
 
   /**
@@ -78,8 +84,6 @@ const ZakatCalculator = {
     radios.forEach(radio => {
       radio.addEventListener('change', () => {
         this.nisabStandard = radio.value;
-        // Clear manual price — a gold price is not a silver price
-        this._manualPriceLocal = null;
         this.updateNisabDisplay();
         // Re-calculate if results are visible
         if (this.resultsSection && !this.resultsSection.classList.contains('hidden')) {
@@ -175,7 +179,6 @@ const ZakatCalculator = {
 
   /**
    * Update the Nisab display on the page (in active currency).
-   * If user has set a manual price, recalculate Nisab from that price.
    */
   updateNisabDisplay() {
     if (!this.nisabDisplay || !this.nisabInfo) return;
@@ -184,46 +187,25 @@ const ZakatCalculator = {
     const currency = this.getCurrency();
     const isGold = this.nisabStandard === 'gold';
 
-    // API price per gram in local currency
-    const apiPricePerGramLocal = CurrencyAPI.convert(isGold ? info.goldPricePerGram : info.silverPricePerGram);
+    const pricePerGramLocal = CurrencyAPI.convert(isGold ? info.goldPricePerGram : info.silverPricePerGram);
     const grams = isGold ? info.nisabGrams : info.silverNisabGrams;
     const metalName = isGold ? 'Gold' : 'Silver';
     const extraDetail = isGold ? '(7.5 tola)' : '(52.5 tola)';
 
-    // If user has entered a manual price, use it for display too
-    const manualPrice = this._manualPriceLocal;
-    const activePrice = manualPrice || apiPricePerGramLocal;
-    const nisabLocal = activePrice * grams;
-
+    const nisabLocal = pricePerGramLocal * grams;
     const nisabFormatted = Utils.formatCurrency(nisabLocal, currency);
-    const priceFormatted = Utils.formatCurrency(activePrice, currency);
+    const priceFormatted = Utils.formatCurrency(pricePerGramLocal, currency);
 
     const updatedText = info.lastUpdated
       ? Utils.formatDate(info.lastUpdated)
       : 'Using estimated prices';
 
     let statusNote = '';
-    if (manualPrice) {
-      statusNote = '<span class="nisab-note">Using your custom price. Clear the field below to use live prices.</span>';
-    } else if (info.isFallback) {
+    if (info.isFallback) {
       statusNote = '<span class="nisab-warning">Using estimated prices. Live rates will update automatically when available.</span>';
     } else if (info.isStale) {
       statusNote = '<span class="nisab-warning">Prices may be outdated. Will refresh when connection is available.</span>';
     }
-
-    // Context-aware label — matches selected standard and active currency
-    const manualLabel = isGold
-      ? `${metalName} price per gram (${currency})`
-      : `${metalName} price per gram (${currency})`;
-
-    // Dynamic placeholder from live API price so the user sees a realistic example
-    const manualPlaceholder = 'e.g. ' + Math.round(apiPricePerGramLocal);
-
-    const manualHint = `Enter what 1 gram of ${metalName.toLowerCase()} costs at your local jeweller in ${currency}. Leave blank to use live prices.`;
-
-    // Keep toggle panel open if user has a manual price set
-    const panelOpen = !!manualPrice;
-    const manualInputValue = manualPrice || '';
 
     this.nisabDisplay.innerHTML = `
       <div class="nisab-card">
@@ -240,63 +222,13 @@ const ZakatCalculator = {
         <h3>Current Nisab Threshold (${metalName})</h3>
         <div class="nisab-amount">${nisabFormatted} ${currency}</div>
         <div class="nisab-detail">${grams} grams of ${metalName.toLowerCase()} ${extraDetail} @ ${priceFormatted}/gram</div>
-        <div class="nisab-updated">${manualPrice ? 'Using your custom price' : 'Last Updated: ' + updatedText}</div>
+        <div class="nisab-updated">Last Updated: ${updatedText}</div>
         ${statusNote}
-        <div class="manual-price-toggle">
-          <button type="button" class="manual-price-toggle-btn" id="toggle-manual-price"
-                  aria-expanded="${panelOpen}" ${panelOpen ? 'class="active"' : ''}>
-            ✏️ My price is different
-          </button>
-          <div class="manual-price-fields ${panelOpen ? '' : 'hidden'}" id="manual-price-fields">
-            <p class="manual-price-note">${manualHint}</p>
-            <div class="manual-price-row">
-              <label for="manual-price-local">${manualLabel}</label>
-              <input type="number" id="manual-price-local" placeholder="${manualPlaceholder}" min="0" step="0.01" value="${manualInputValue}">
-            </div>
-          </div>
-        </div>
       </div>
     `;
 
     // Re-bind nisab standard toggle since innerHTML was replaced
     this.setupNisabToggle();
-
-    // Manual price toggle open/close
-    const toggleBtn = document.getElementById('toggle-manual-price');
-    const fieldsDiv = document.getElementById('manual-price-fields');
-    if (toggleBtn && fieldsDiv) {
-      toggleBtn.addEventListener('click', () => {
-        const isOpen = !fieldsDiv.classList.contains('hidden');
-        fieldsDiv.classList.toggle('hidden', isOpen);
-        toggleBtn.setAttribute('aria-expanded', String(!isOpen));
-        toggleBtn.classList.toggle('active', !isOpen);
-      });
-    }
-
-    // Live update: when user types a manual price, update Nisab numbers
-    // without rebuilding the entire DOM (avoids losing input focus)
-    const manualInput = document.getElementById('manual-price-local');
-    if (manualInput) {
-      manualInput.addEventListener('input', () => {
-        const val = Utils.parseNumber(manualInput.value);
-        this._manualPriceLocal = val > 0 ? val : null;
-
-        // Update just the Nisab numbers in-place (no DOM rebuild)
-        const price = this._manualPriceLocal || apiPricePerGramLocal;
-        const newNisab = price * grams;
-        const amountEl = this.nisabDisplay.querySelector('.nisab-amount');
-        const detailEl = this.nisabDisplay.querySelector('.nisab-detail');
-        const updatedEl = this.nisabDisplay.querySelector('.nisab-updated');
-        if (amountEl) amountEl.textContent = Utils.formatCurrency(newNisab, currency) + ' ' + currency;
-        if (detailEl) detailEl.textContent = `${grams} grams of ${metalName.toLowerCase()} ${extraDetail} @ ${Utils.formatCurrency(price, currency)}/gram`;
-        if (updatedEl) updatedEl.textContent = this._manualPriceLocal ? 'Using your custom price' : 'Last Updated: ' + updatedText;
-
-        // Recalculate if results are visible
-        if (this.resultsSection && !this.resultsSection.classList.contains('hidden')) {
-          this.calculate();
-        }
-      });
-    }
   },
 
   /**
@@ -356,6 +288,56 @@ const ZakatCalculator = {
   },
 
   /**
+   * Setup collapsible card toggle behavior (multi-open, not accordion)
+   */
+  setupCardToggles() {
+    const cards = document.querySelectorAll('.calc-card');
+    cards.forEach(card => {
+      const header = card.querySelector('.calc-card-header');
+      if (!header) return;
+      header.addEventListener('click', () => {
+        const isExpanded = card.getAttribute('aria-expanded') === 'true';
+        card.setAttribute('aria-expanded', String(!isExpanded));
+      });
+    });
+  },
+
+  /**
+   * Update progress bar based on which cards have non-zero values
+   */
+  updateProgress() {
+    const cards = document.querySelectorAll('.calc-card');
+    let filledCount = 0;
+
+    cards.forEach(card => {
+      const inputs = card.querySelectorAll('input[type="number"]');
+      let hasValue = false;
+      inputs.forEach(input => {
+        if (Utils.parseNumber(input.value) > 0) {
+          hasValue = true;
+        }
+      });
+
+      const checkEl = card.querySelector('.calc-card-check');
+      if (hasValue) {
+        filledCount++;
+        card.classList.add('has-values');
+        if (checkEl) checkEl.classList.remove('hidden');
+      } else {
+        card.classList.remove('has-values');
+        if (checkEl) checkEl.classList.add('hidden');
+      }
+    });
+
+    const totalCards = cards.length;
+    const pct = totalCards > 0 ? Math.round((filledCount / totalCards) * 100) : 0;
+    const fillEl = document.getElementById('calc-progress-fill');
+    const textEl = document.getElementById('calc-progress-text');
+    if (fillEl) fillEl.style.width = pct + '%';
+    if (textEl) textEl.textContent = `${filledCount} of ${totalCards} sections complete`;
+  },
+
+  /**
    * Real-time calculation: recalculate as user types any value
    */
   setupLiveCalculation() {
@@ -363,6 +345,7 @@ const ZakatCalculator = {
     const recalc = () => {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
+        this.updateProgress();
         // Only recalculate if results are already visible (user has calculated once)
         if (this.resultsSection && !this.resultsSection.classList.contains('hidden')) {
           this.calculate();
@@ -408,8 +391,7 @@ const ZakatCalculator = {
       crypto: getValue('crypto'),
       otherAssets: getValue('other-assets'),
       debts: getValue('debts'),
-      unpaidBills: getValue('unpaid-bills'),
-      manualPriceLocal: this._manualPriceLocal || null
+      unpaidBills: getValue('unpaid-bills')
     };
   },
 
@@ -422,25 +404,11 @@ const ZakatCalculator = {
   computeBreakdown(values) {
     const info = this.nisabInfo;
 
-    // Determine prices per gram in local currency
-    // If user entered a manual price, it's already in local currency — use directly.
-    // Otherwise convert from USD API price.
-    const apiGoldPerGramLocal = CurrencyAPI.convert(info ? info.goldPricePerGram : 161.33);
-    const apiSilverPerGramLocal = CurrencyAPI.convert(info ? info.silverPricePerGram : 2.64);
+    // Prices per gram in local currency (converted from USD API price)
+    const goldPricePerGramLocal = CurrencyAPI.convert(info ? info.goldPricePerGram : 161.33);
+    const silverPricePerGramLocal = CurrencyAPI.convert(info ? info.silverPricePerGram : 2.64);
 
-    const usingManualPrice = !!values.manualPriceLocal;
     const isGoldStandard = this.nisabStandard !== 'silver';
-
-    // Active metal price per gram in local currency
-    const manualActivePerGramLocal = usingManualPrice ? values.manualPriceLocal : null;
-
-    const goldPricePerGramLocal = (usingManualPrice && isGoldStandard)
-      ? manualActivePerGramLocal
-      : apiGoldPerGramLocal;
-
-    const silverPricePerGramLocal = (usingManualPrice && !isGoldStandard)
-      ? manualActivePerGramLocal
-      : apiSilverPerGramLocal;
 
     // Nisab in local currency using the active metal's price
     const nisabGoldLocal = goldPricePerGramLocal * 87.48;
@@ -491,8 +459,7 @@ const ZakatCalculator = {
       nisabStandard: this.nisabStandard,
       meetsNisab,
       zakatOwed,
-      zakatRate: this.ZAKAT_RATE,
-      usingManualPrice
+      zakatRate: this.ZAKAT_RATE
     };
   },
 
@@ -686,14 +653,18 @@ const ZakatCalculator = {
     // Reset all number inputs to 0
     const inputs = this.form.querySelectorAll('input[type="number"]');
     inputs.forEach(input => input.value = '0');
-    // Clear manual price override
-    this._manualPriceLocal = null;
     // Restore currency dropdown selection (form.reset may have cleared it)
     if (this.currencySelect) {
       this.currencySelect.value = CurrencyAPI.activeCurrency;
     }
     this.updateNisabDisplay();
     this.updateLabels();
+    // Collapse all cards except first, reset progress
+    const cards = document.querySelectorAll('.calc-card');
+    cards.forEach((card, i) => {
+      card.setAttribute('aria-expanded', i === 0 ? 'true' : 'false');
+    });
+    this.updateProgress();
     Utils.scrollTo('#zakat-form');
   }
 };
