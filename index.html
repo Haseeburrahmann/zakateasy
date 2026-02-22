@@ -221,160 +221,102 @@
         <div class="calc-layout-form">
           <form id="zakat-form" class="calc-form">
 
-            <!-- Progress Indicator -->
-            <div class="calc-progress">
-              <div class="calc-progress-bar">
-                <div class="calc-progress-fill" id="calc-progress-fill" style="width: 0%"></div>
-              </div>
-              <span class="calc-progress-text" id="calc-progress-text">0 of 4 sections complete</span>
+            <!-- Assets Section -->
+            <h3 class="form-section-title"><span class="icon">&#9734;</span> Your Assets</h3>
+
+            <div class="form-group">
+              <label for="cash">Cash & Bank Balances <button type="button" class="help-tip" aria-label="Help" data-tip="Include ALL savings accounts, checking accounts, fixed deposits, foreign currency, and physical cash at home.">?</button></label>
+              <input type="number" id="cash" name="cash" value="0" min="0" step="0.01"
+                     placeholder="Enter total cash and bank balance">
+              <span class="input-hint">Include savings, checking, and any cash on hand</span>
             </div>
 
-            <!-- Card 1: Cash & Savings -->
-            <div class="calc-card" data-card="cash" aria-expanded="true">
-              <button type="button" class="calc-card-header" aria-controls="card-body-cash">
-                <div class="calc-card-header-left">
-                  <span class="calc-card-icon">&#128176;</span>
-                  <span class="calc-card-title">Cash & Savings</span>
-                  <span class="calc-card-count">2 fields</span>
-                </div>
-                <div class="calc-card-header-right">
-                  <span class="calc-card-check hidden" aria-label="Section has values">&#10003;</span>
-                  <span class="calc-card-chevron">&#8250;</span>
-                </div>
-              </button>
-              <div class="calc-card-body" id="card-body-cash">
-                <div class="form-group">
-                  <label for="cash">Cash & Bank Balances <button type="button" class="help-tip" aria-label="Help" data-tip="Include ALL savings accounts, checking accounts, fixed deposits, foreign currency, and physical cash at home.">?</button></label>
-                  <input type="number" id="cash" name="cash" value="0" min="0" step="0.01"
-                         placeholder="Enter total cash and bank balance">
-                  <span class="input-hint">Include savings, checking, and any cash on hand</span>
-                </div>
-                <div class="form-group">
-                  <label for="crypto">Cryptocurrency <button type="button" class="help-tip" aria-label="Help" data-tip="Current market value of ALL cryptocurrency: Bitcoin, Ethereum, stablecoins, altcoins, and tokens. Most scholars consider crypto zakatable as a tradeable asset.">?</button></label>
-                  <input type="number" id="crypto" name="crypto" value="0" min="0" step="0.01"
-                         placeholder="Enter current market value">
-                  <span class="input-hint">Current market value of Bitcoin, Ethereum, and other crypto holdings</span>
-                </div>
-              </div>
+            <div class="form-group">
+              <label for="crypto">Cryptocurrency <button type="button" class="help-tip" aria-label="Help" data-tip="Current market value of ALL cryptocurrency: Bitcoin, Ethereum, stablecoins, altcoins, and tokens. Most scholars consider crypto zakatable as a tradeable asset.">?</button></label>
+              <input type="number" id="crypto" name="crypto" value="0" min="0" step="0.01"
+                     placeholder="Enter current market value">
+              <span class="input-hint">Current market value of Bitcoin, Ethereum, and other crypto holdings</span>
             </div>
 
-            <!-- Card 2: Gold & Silver -->
-            <div class="calc-card" data-card="metals" aria-expanded="false">
-              <button type="button" class="calc-card-header" aria-controls="card-body-metals">
-                <div class="calc-card-header-left">
-                  <span class="calc-card-icon">&#129689;</span>
-                  <span class="calc-card-title">Gold & Silver</span>
-                  <span class="calc-card-count">2 fields</span>
-                </div>
-                <div class="calc-card-header-right">
-                  <span class="calc-card-check hidden" aria-label="Section has values">&#10003;</span>
-                  <span class="calc-card-chevron">&#8250;</span>
-                </div>
-              </button>
-              <div class="calc-card-body" id="card-body-metals">
+            <div class="form-group">
+              <label id="gold-input-label" for="gold">Gold (market value) <button type="button" class="help-tip" aria-label="Help" data-tip="Include ALL gold you own: jewelry, coins, bars. Some Hanafi scholars exclude one set of daily-wear jewelry. When in doubt, include it.">?</button></label>
+              <div class="input-row">
                 <div class="form-group">
-                  <label id="gold-input-label" for="gold">Gold (market value) <button type="button" class="help-tip" aria-label="Help" data-tip="Include ALL gold you own: jewelry, coins, bars. Some Hanafi scholars exclude one set of daily-wear jewelry. When in doubt, include it.">?</button></label>
-                  <div class="input-row">
-                    <div class="form-group">
-                      <input type="number" id="gold" name="gold" value="0" min="0" step="0.01"
-                             placeholder="Enter gold value or weight">
-                    </div>
-                    <div class="form-group unit-select">
-                      <select id="gold-unit" name="gold-unit">
-                        <option value="value">Value</option>
-                        <option value="grams">Grams</option>
-                      </select>
-                    </div>
-                  </div>
-                  <span class="input-hint">Include jewelry, coins, and gold bars (exclude daily-wear jewelry per some scholars)</span>
+                  <input type="number" id="gold" name="gold" value="0" min="0" step="0.01"
+                         placeholder="Enter gold value or weight">
                 </div>
-                <div class="form-group">
-                  <label id="silver-input-label" for="silver">Silver (market value) <button type="button" class="help-tip" aria-label="Help" data-tip="All silver items including jewelry, coins, and silverware. If you choose &quot;Grams&quot;, we multiply by the live silver price automatically.">?</button></label>
-                  <div class="input-row">
-                    <div class="form-group">
-                      <input type="number" id="silver" name="silver" value="0" min="0" step="0.01"
-                             placeholder="Enter silver value or weight">
-                    </div>
-                    <div class="form-group unit-select">
-                      <select id="silver-unit" name="silver-unit">
-                        <option value="value">Value</option>
-                        <option value="grams">Grams</option>
-                      </select>
-                    </div>
-                  </div>
-                  <span class="input-hint">Include silver jewelry, coins, and silverware</span>
+                <div class="form-group unit-select">
+                  <select id="gold-unit" name="gold-unit">
+                    <option value="value">Value</option>
+                    <option value="grams">Grams</option>
+                  </select>
                 </div>
               </div>
+              <span class="input-hint">Include jewelry, coins, and gold bars (exclude daily-wear jewelry per some scholars)</span>
             </div>
 
-            <!-- Card 3: Investments & Business -->
-            <div class="calc-card" data-card="investments" aria-expanded="false">
-              <button type="button" class="calc-card-header" aria-controls="card-body-investments">
-                <div class="calc-card-header-left">
-                  <span class="calc-card-icon">&#128200;</span>
-                  <span class="calc-card-title">Investments & Business</span>
-                  <span class="calc-card-count">4 fields</span>
-                </div>
-                <div class="calc-card-header-right">
-                  <span class="calc-card-check hidden" aria-label="Section has values">&#10003;</span>
-                  <span class="calc-card-chevron">&#8250;</span>
-                </div>
-              </button>
-              <div class="calc-card-body" id="card-body-investments">
+            <div class="form-group">
+              <label id="silver-input-label" for="silver">Silver (market value) <button type="button" class="help-tip" aria-label="Help" data-tip="All silver items including jewelry, coins, and silverware. If you choose &quot;Grams&quot;, we multiply by the live silver price automatically.">?</button></label>
+              <div class="input-row">
                 <div class="form-group">
-                  <label for="investments">Investments & Stocks <button type="button" class="help-tip" aria-label="Help" data-tip="Current market value of all stocks, mutual funds, ETFs, bonds, and accessible retirement accounts (401k, IRA if you can withdraw).">?</button></label>
-                  <input type="number" id="investments" name="investments" value="0" min="0" step="0.01"
-                         placeholder="Enter total investment value">
-                  <span class="input-hint">Current market value of shares, mutual funds, and other investments</span>
+                  <input type="number" id="silver" name="silver" value="0" min="0" step="0.01"
+                         placeholder="Enter silver value or weight">
                 </div>
-                <div class="form-group">
-                  <label for="business-assets">Business Assets <button type="button" class="help-tip" aria-label="Help" data-tip="Value of inventory and goods held for sale. Exclude tools, machinery, and equipment used in the business — those are not zakatable.">?</button></label>
-                  <input type="number" id="business-assets" name="business-assets" value="0" min="0" step="0.01"
-                         placeholder="Enter business asset value">
-                  <span class="input-hint">Inventory and goods for sale (exclude fixed assets like equipment)</span>
-                </div>
-                <div class="form-group">
-                  <label for="receivables">Money Owed to You <button type="button" class="help-tip" aria-label="Help" data-tip="Money others owe you that you expect to receive: personal loans given, unpaid salary, pending invoices, security deposits, tax refunds due.">?</button></label>
-                  <input type="number" id="receivables" name="receivables" value="0" min="0" step="0.01"
-                         placeholder="Enter amount owed to you">
-                  <span class="input-hint">Loans given to others you expect back, unpaid salary, tax refunds due</span>
-                </div>
-                <div class="form-group">
-                  <label for="other-assets">Other Zakatable Assets <button type="button" class="help-tip" aria-label="Help" data-tip="Any other liquid wealth: rental income received, pension savings you can access, prize bonds, provident fund balance, etc.">?</button></label>
-                  <input type="number" id="other-assets" name="other-assets" value="0" min="0" step="0.01"
-                         placeholder="Enter other asset value">
-                  <span class="input-hint">Any other wealth subject to Zakat (e.g., rental income, pension savings)</span>
+                <div class="form-group unit-select">
+                  <select id="silver-unit" name="silver-unit">
+                    <option value="value">Value</option>
+                    <option value="grams">Grams</option>
+                  </select>
                 </div>
               </div>
+              <span class="input-hint">Include silver jewelry, coins, and silverware</span>
             </div>
 
-            <!-- Card 4: Debts & Liabilities -->
-            <div class="calc-card" data-card="debts" aria-expanded="false">
-              <button type="button" class="calc-card-header" aria-controls="card-body-debts">
-                <div class="calc-card-header-left">
-                  <span class="calc-card-icon">&#128203;</span>
-                  <span class="calc-card-title">Debts & Liabilities</span>
-                  <span class="calc-card-count">2 fields</span>
-                </div>
-                <div class="calc-card-header-right">
-                  <span class="calc-card-check hidden" aria-label="Section has values">&#10003;</span>
-                  <span class="calc-card-chevron">&#8250;</span>
-                </div>
-              </button>
-              <div class="calc-card-body" id="card-body-debts">
-                <div class="form-group">
-                  <label for="debts">Immediate Debts Owed <button type="button" class="help-tip" aria-label="Help" data-tip="Only debts due now or within the lunar year: credit card balance, personal loans due, car payments, mortgage instalments due. Long-term debt (full mortgage) is excluded.">?</button></label>
-                  <input type="number" id="debts" name="debts" value="0" min="0" step="0.01"
-                         placeholder="Enter debts currently due">
-                  <span class="input-hint">Personal loans, credit card balances, and debts due now</span>
-                </div>
-                <div class="form-group">
-                  <label for="unpaid-bills">Unpaid Bills Due <button type="button" class="help-tip" aria-label="Help" data-tip="Utilities, rent, and other bills that are currently due but haven't been paid yet. Only include bills that are already overdue or due now.">?</button></label>
-                  <input type="number" id="unpaid-bills" name="unpaid-bills" value="0" min="0" step="0.01"
-                         placeholder="Enter unpaid bills">
-                  <span class="input-hint">Rent, utilities, and other bills currently due</span>
-                </div>
-              </div>
+            <div class="form-group">
+              <label for="investments">Investments & Stocks <button type="button" class="help-tip" aria-label="Help" data-tip="Current market value of all stocks, mutual funds, ETFs, bonds, and accessible retirement accounts (401k, IRA if you can withdraw).">?</button></label>
+              <input type="number" id="investments" name="investments" value="0" min="0" step="0.01"
+                     placeholder="Enter total investment value">
+              <span class="input-hint">Current market value of shares, mutual funds, and other investments</span>
+            </div>
+
+            <div class="form-group">
+              <label for="business-assets">Business Assets <button type="button" class="help-tip" aria-label="Help" data-tip="Value of inventory and goods held for sale. Exclude tools, machinery, and equipment used in the business — those are not zakatable.">?</button></label>
+              <input type="number" id="business-assets" name="business-assets" value="0" min="0" step="0.01"
+                     placeholder="Enter business asset value">
+              <span class="input-hint">Inventory and goods for sale (exclude fixed assets like equipment)</span>
+            </div>
+
+            <div class="form-group">
+              <label for="receivables">Money Owed to You <button type="button" class="help-tip" aria-label="Help" data-tip="Money others owe you that you expect to receive: personal loans given, unpaid salary, pending invoices, security deposits, tax refunds due.">?</button></label>
+              <input type="number" id="receivables" name="receivables" value="0" min="0" step="0.01"
+                     placeholder="Enter amount owed to you">
+              <span class="input-hint">Loans given to others you expect back, unpaid salary, tax refunds due</span>
+            </div>
+
+            <div class="form-group">
+              <label for="other-assets">Other Zakatable Assets <button type="button" class="help-tip" aria-label="Help" data-tip="Any other liquid wealth: rental income received, pension savings you can access, prize bonds, provident fund balance, etc.">?</button></label>
+              <input type="number" id="other-assets" name="other-assets" value="0" min="0" step="0.01"
+                     placeholder="Enter other asset value">
+              <span class="input-hint">Any other wealth subject to Zakat (e.g., rental income, pension savings)</span>
+            </div>
+
+            <hr class="form-divider">
+
+            <!-- Liabilities Section -->
+            <h3 class="form-section-title"><span class="icon">&#9881;</span> Deductible Liabilities</h3>
+
+            <div class="form-group">
+              <label for="debts">Immediate Debts Owed <button type="button" class="help-tip" aria-label="Help" data-tip="Only debts due now or within the lunar year: credit card balance, personal loans due, car payments, mortgage instalments due. Long-term debt (full mortgage) is excluded.">?</button></label>
+              <input type="number" id="debts" name="debts" value="0" min="0" step="0.01"
+                     placeholder="Enter debts currently due">
+              <span class="input-hint">Personal loans, credit card balances, and debts due now</span>
+            </div>
+
+            <div class="form-group">
+              <label for="unpaid-bills">Unpaid Bills Due <button type="button" class="help-tip" aria-label="Help" data-tip="Utilities, rent, and other bills that are currently due but haven't been paid yet. Only include bills that are already overdue or due now.">?</button></label>
+              <input type="number" id="unpaid-bills" name="unpaid-bills" value="0" min="0" step="0.01"
+                     placeholder="Enter unpaid bills">
+              <span class="input-hint">Rent, utilities, and other bills currently due</span>
             </div>
 
             <!-- Actions -->

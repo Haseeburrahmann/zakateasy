@@ -63,17 +63,11 @@ const ZakatCalculator = {
     // Format inputs on blur
     this.setupInputFormatting();
 
-    // Collapsible card toggles
-    this.setupCardToggles();
-
     // Real-time calculation: recalculate as user types (debounced)
     this.setupLiveCalculation();
 
     // Update labels with currency symbol
     this.updateLabels();
-
-    // Initial progress bar state
-    this.updateProgress();
   },
 
   /**
@@ -288,56 +282,6 @@ const ZakatCalculator = {
   },
 
   /**
-   * Setup collapsible card toggle behavior (multi-open, not accordion)
-   */
-  setupCardToggles() {
-    const cards = document.querySelectorAll('.calc-card');
-    cards.forEach(card => {
-      const header = card.querySelector('.calc-card-header');
-      if (!header) return;
-      header.addEventListener('click', () => {
-        const isExpanded = card.getAttribute('aria-expanded') === 'true';
-        card.setAttribute('aria-expanded', String(!isExpanded));
-      });
-    });
-  },
-
-  /**
-   * Update progress bar based on which cards have non-zero values
-   */
-  updateProgress() {
-    const cards = document.querySelectorAll('.calc-card');
-    let filledCount = 0;
-
-    cards.forEach(card => {
-      const inputs = card.querySelectorAll('input[type="number"]');
-      let hasValue = false;
-      inputs.forEach(input => {
-        if (Utils.parseNumber(input.value) > 0) {
-          hasValue = true;
-        }
-      });
-
-      const checkEl = card.querySelector('.calc-card-check');
-      if (hasValue) {
-        filledCount++;
-        card.classList.add('has-values');
-        if (checkEl) checkEl.classList.remove('hidden');
-      } else {
-        card.classList.remove('has-values');
-        if (checkEl) checkEl.classList.add('hidden');
-      }
-    });
-
-    const totalCards = cards.length;
-    const pct = totalCards > 0 ? Math.round((filledCount / totalCards) * 100) : 0;
-    const fillEl = document.getElementById('calc-progress-fill');
-    const textEl = document.getElementById('calc-progress-text');
-    if (fillEl) fillEl.style.width = pct + '%';
-    if (textEl) textEl.textContent = `${filledCount} of ${totalCards} sections complete`;
-  },
-
-  /**
    * Real-time calculation: recalculate as user types any value
    */
   setupLiveCalculation() {
@@ -345,7 +289,6 @@ const ZakatCalculator = {
     const recalc = () => {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
-        this.updateProgress();
         // Only recalculate if results are already visible (user has calculated once)
         if (this.resultsSection && !this.resultsSection.classList.contains('hidden')) {
           this.calculate();
@@ -659,12 +602,6 @@ const ZakatCalculator = {
     }
     this.updateNisabDisplay();
     this.updateLabels();
-    // Collapse all cards except first, reset progress
-    const cards = document.querySelectorAll('.calc-card');
-    cards.forEach((card, i) => {
-      card.setAttribute('aria-expanded', i === 0 ? 'true' : 'false');
-    });
-    this.updateProgress();
     Utils.scrollTo('#zakat-form');
   }
 };

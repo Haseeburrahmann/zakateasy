@@ -94,31 +94,13 @@
     position: static; /* disable sticky on mobile */
   }
 
+  .calc-form {
+    padding: 24px 20px;
+  }
+
   .results-placeholder {
     min-height: 160px;
     padding: 24px;
-  }
-
-  /* Calculator cards on tablet */
-  .calc-card-header {
-    padding: 14px 16px;
-  }
-
-  .calc-card-body {
-    padding: 0 16px;
-  }
-
-  .calc-card[aria-expanded="true"] .calc-card-body {
-    padding: 4px 16px 16px;
-  }
-
-  .calc-card-title {
-    font-size: 0.95rem;
-  }
-
-  .calc-progress {
-    margin-bottom: 20px;
-    padding: 16px 20px;
   }
 
   .input-row {
@@ -254,25 +236,8 @@
     font-size: 1.7rem;
   }
 
-  /* Calculator cards on small phones */
-  .calc-card-header {
-    padding: 12px 14px;
-  }
-
-  .calc-card-body {
-    padding: 0 14px;
-  }
-
-  .calc-card[aria-expanded="true"] .calc-card-body {
-    padding: 4px 14px 14px;
-  }
-
-  .calc-card-count {
-    display: none; /* hide field count badge on small phones */
-  }
-
-  .calc-progress {
-    padding: 14px 16px;
+  .calc-form {
+    padding: 20px 16px;
   }
 
   .form-group input[type="number"],
@@ -359,19 +324,6 @@
     font-size: 1.3rem;
   }
 
-  /* Calculator cards on large screens */
-  .calc-card-header {
-    padding: 18px 24px;
-  }
-
-  .calc-card-body {
-    padding: 0 24px;
-  }
-
-  .calc-card[aria-expanded="true"] .calc-card-body {
-    padding: 4px 24px 24px;
-  }
-
   .calc-layout {
     gap: 40px;
   }
@@ -398,20 +350,6 @@
   .results-card {
     box-shadow: none;
     border: 1px solid #ccc;
-  }
-
-  .calc-card {
-    border: 1px solid #ccc;
-  }
-
-  .calc-card-body {
-    max-height: none !important;
-    padding: 12px 20px !important;
-  }
-
-  .calc-card-chevron,
-  .calc-progress {
-    display: none !important;
   }
 
   a {
