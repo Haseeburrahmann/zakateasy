@@ -140,7 +140,7 @@ const ZakatCalculator = {
     const goldLabel = document.getElementById('gold-input-label');
     const silverLabel = document.getElementById('silver-input-label');
 
-    const currencyLabel = code === 'USD' ? '$' : code;
+    const currencyLabel = code;
 
     if (goldLabel) {
       // Preserve the help-tip button when updating label text
