@@ -253,10 +253,6 @@ const ZakatCalculator = {
         toggleBtn.classList.toggle('active', !isOpen);
       });
     }
-    return; // skip the duplicate setupNisabToggle below
-
-    // Re-bind toggle events since innerHTML was replaced
-    this.setupNisabToggle();
   },
 
   /**

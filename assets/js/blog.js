@@ -230,8 +230,7 @@ const BlogUtils = {
     }, { rootMargin: '-80px 0px -60% 0px' });
 
     headings.forEach(h => observer.observe(h));
-  }
-};
+  },
 
   /**
    * Sticky CTA bar — appears after user scrolls 40% of article
@@ -240,6 +239,11 @@ const BlogUtils = {
   initStickyCTA() {
     // Only run on blog post pages (has .post-content)
     if (!document.querySelector('.post-content')) return;
+
+    // Don't show if already dismissed this session
+    try {
+      if (sessionStorage.getItem('zakateasy_cta_dismissed')) return;
+    } catch(e) {}
 
     // Determine the correct path depth to index.html
     const depth = window.location.pathname.split('/').filter(Boolean).length;
@@ -271,11 +275,6 @@ const BlogUtils = {
       // Remember for this session so it doesn't pop back up
       try { sessionStorage.setItem('zakateasy_cta_dismissed', '1'); } catch(e) {}
     });
-
-    // Don't show if already dismissed this session
-    try {
-      if (sessionStorage.getItem('zakateasy_cta_dismissed')) return;
-    } catch(e) {}
 
     // Show after 40% scroll depth
     const onScroll = () => {
