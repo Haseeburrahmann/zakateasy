@@ -90,6 +90,91 @@ zakateasy/
 - Islamic content must be accurate and cite sources (Quran, Hadith, scholarly consensus)
 - Accessibility: ARIA labels on form inputs, sufficient color contrast
 
+## JavaScript Module Pattern
+
+Every JS file uses the top-level object pattern. **Never use classes or loose global functions.**
+
+```js
+// ✅ Correct pattern
+const ModuleName = {
+  someProperty: 'value',
+
+  init() { ... },
+
+  helperMethod() { ... }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  ModuleName.init();
+});
+
+// ❌ Wrong — do not use
+class ModuleName { ... }
+function someFunction() { ... }  // loose global
+var x = ...;                     // no var
+```
+
+**Module responsibilities (never mix concerns):**
+- `utils.js` → Utils: pure utility functions, no API calls, no DOM side-effects
+- `api.js` → MetalsAPI (gold/silver prices) + CurrencyAPI (exchange rates)
+- `calculator.js` → ZakatCalculator: depends on MetalsAPI, CurrencyAPI, Utils
+- `email-capture.js` → email forms only
+- `ramadan-countdown.js` → countdown widget only
+- `blog.js` → blog filtering/search UI only
+- `affiliates.js` → affiliate link handling only
+
+## CSS Design System
+
+Always use CSS custom properties — **never hardcode hex colors**:
+
+```css
+/* Brand Colors */
+--color-primary: #0F5132         /* Islamic green */
+--color-primary-light: #1a7a4c  /* Hover green */
+--color-primary-dark: #0a3821   /* Dark green (header, footer) */
+--color-secondary: #D4AF37      /* Gold accent */
+--color-secondary-light: #e6c84d /* Light gold (hover) */
+
+/* Backgrounds & Surfaces */
+--color-background: #FFFFFF      /* Page background */
+--color-surface: #F8F9FA        /* Light surface (cards, inputs) */
+--color-surface-alt: #F0F4F1    /* Alt surface (section backgrounds) */
+
+/* Text */
+--color-text: #2C3E50           /* Primary body text */
+--color-text-light: #5D6D7E     /* Secondary/label text */
+--color-text-muted: #95A5A6     /* Hints, captions, placeholders */
+
+/* UI */
+--color-trust: #2874A6          /* Trust/link blue */
+--color-border: #DEE2E6         /* Input and card borders */
+--color-success: #28A745
+--color-warning: #FFC107
+--color-error: #DC3545
+
+/* Shadows */
+--shadow-sm: 0 1px 3px rgba(0,0,0,0.08)
+--shadow-md: 0 4px 12px rgba(0,0,0,0.1)
+--shadow-lg: 0 8px 30px rgba(0,0,0,0.12)
+
+/* Border Radius */
+--radius-sm: 6px
+--radius-md: 10px
+--radius-lg: 16px
+```
+
+All responsive media queries go in `responsive.css` only, not scattered in `main.css`.
+
+## Architecture Rules (DO NOT VIOLATE)
+
+1. **No direct gold-api.com calls from browser** — always use `/.netlify/functions/metals`
+2. **No absolute paths in HTML** — all links must be relative (see Path Conventions above)
+3. **No npm/build step** — zero-dependency project, works by opening index.html in a browser
+4. **No hardcoded brand colors** — always use CSS custom properties
+5. **Google Fonts: preload pattern only** — never `<link rel="stylesheet">` directly for Google Fonts
+6. **Netlify form names must be globally unique** across the entire site
+7. **JS modules follow object pattern** — no classes, no loose globals, no `var`
+
 ## Netlify Forms
 
 - Use `data-netlify="true"` + unique `name` attribute per form
@@ -162,10 +247,31 @@ Each page footer has 4 columns: Brand | Pages | Resources | Legal
 - **Footer Pages column** updated on all 24 pages (added Ramadan + Duas links)
 - **Homepage title/OG** updated to include "online" keyword
 
+## Slash Commands (Claude Multi-Agent System)
+
+These commands are in `.claude/commands/` and act as specialized agents:
+
+| Command | Purpose |
+|---------|---------|
+| `/new-feature` | Implement any new feature (page, JS module, CSS, widget) |
+| `/new-blog-post` | Write a new blog post with correct structure, schema, and SEO |
+| `/review` | Review current git diff against all architecture rules |
+| `/architecture-check` | Full codebase audit: paths, modules, SEO, sitemap, forms |
+| `/seo-audit` | Comprehensive SEO audit of all pages |
+| `/create-pr` | Generate a PR description and create the GitHub PR |
+
+**How to use:** Type `/new-blog-post Laylat al-Qadr 2026` and Claude will follow the full workflow from keyword planning to sitemap update.
+
+## Docs
+
+Additional documentation in `/docs/`:
+- `docs/ARCHITECTURE.md` — Full architecture decisions, dependency map, CSS system, Netlify config details
+- `docs/SEO-STRATEGY.md` — Keyword map, content calendar, link building, on-page formulas, tracking
+
 ## Active Priorities
 
 - Submit sitemap to Google Search Console for `zakateasy.org` property
 - Request indexing for all blog posts via URL Inspection tool
 - Upcoming blog posts needed (before Ramadan 2026 ~Mar 1):
-  - Laylat al-Qadr 2026 guide (publish ~Mar 11–15)
-  - Zakat al-Fitr 2026 guide (publish by Mar 21)
+  - Laylat al-Qadr 2026 guide (publish ~Mar 11–15) → `/new-blog-post laylat-al-qadr-2026`
+  - Zakat al-Fitr 2026 guide (publish by Mar 21) → `/new-blog-post zakat-al-fitr-2026`
