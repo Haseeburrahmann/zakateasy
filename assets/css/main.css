@@ -700,13 +700,18 @@ p {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+              padding 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              overflow 0s 0.35s;
   padding: 0 20px;
 }
 
 .calc-card[aria-expanded="true"] .calc-card-body {
   max-height: 800px;
   padding: 4px 20px 20px;
+  overflow: visible;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              overflow 0s 0s;
 }
 
 /* Remove bottom margin from last field in each card */
