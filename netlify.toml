@@ -22,6 +22,55 @@
   status = 301
   force = true
 
+# Fix duplicate URLs — redirect .html versions to clean URLs
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/what-is-zakat.html"
+  to = "/what-is-zakat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/faq.html"
+  to = "/faq"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/about.html"
+  to = "/about"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/ramadan.html"
+  to = "/ramadan"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/duas.html"
+  to = "/duas"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/thank-you.html"
+  to = "/thank-you"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/index.html"
+  to = "/blog"
+  status = 301
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]
