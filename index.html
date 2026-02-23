@@ -26,6 +26,8 @@
 
   <!-- Favicon -->
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/images/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="assets/images/icon-192.png">
 
   <!-- Fonts: preconnect for speed, load non-blocking -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,7 +93,12 @@
     "@type": "Organization",
     "name": "ZakatEasy",
     "url": "https://zakateasy.org",
-    "logo": "https://zakateasy.org/assets/images/og-image.svg",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zakateasy.org/assets/images/icon-512.png",
+      "width": 512,
+      "height": 512
+    },
     "description": "Free Islamic Zakat Calculator based on current gold and silver prices and Islamic scholarship"
   }
   </script>
