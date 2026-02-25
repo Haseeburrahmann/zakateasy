@@ -291,7 +291,7 @@ const ZakatCalculator = {
       debounceTimer = setTimeout(() => {
         // Only recalculate if results are already visible (user has calculated once)
         if (this.resultsSection && !this.resultsSection.classList.contains('hidden')) {
-          this.calculate();
+          this.calculate(false);
         }
       }, 300);
     };
@@ -305,12 +305,12 @@ const ZakatCalculator = {
   /**
    * Perform the Zakat calculation
    */
-  calculate() {
+  calculate(shouldScroll = true) {
     const values = this.getInputValues();
     const breakdown = this.computeBreakdown(values);
     this.displayResults(breakdown);
     // On mobile (single column), scroll to results; on desktop results are inline
-    if (window.innerWidth < 900) {
+    if (shouldScroll && window.innerWidth < 900) {
       Utils.scrollTo('#results-section');
     }
   },
