@@ -42,11 +42,16 @@ const ZakatCalculator = {
     }
 
     // Currency selector change
+    this.currencyWarning = document.getElementById('currency-changed-warning');
     if (this.currencySelect) {
       this.currencySelect.addEventListener('change', () => {
         CurrencyAPI.setCurrency(this.currencySelect.value);
         this.updateNisabDisplay();
         this.updateLabels();
+        // Show warning that entered values are not auto-converted
+        if (this.currencyWarning) {
+          this.currencyWarning.classList.add('visible');
+        }
         // Re-calculate if results are visible
         if (this.resultsSection && !this.resultsSection.classList.contains('hidden')) {
           this.calculate();
@@ -298,6 +303,9 @@ const ZakatCalculator = {
         // Only recalculate if results are already visible (user has calculated once)
         if (this.resultsSection && !this.resultsSection.classList.contains('hidden')) {
           this.calculate(false);
+        } else {
+          // Still clear error on the field being edited, even before first calculation
+          this.clearValidationErrors();
         }
       }, 300);
     };
@@ -312,6 +320,10 @@ const ZakatCalculator = {
    * Perform the Zakat calculation
    */
   calculate(shouldScroll = true) {
+    // Validate first — stop and show errors if any negative values found
+    if (!this.validateInputs()) {
+      return;
+    }
     const values = this.getInputValues();
     const breakdown = this.computeBreakdown(values);
     this.displayResults(breakdown);
@@ -322,10 +334,57 @@ const ZakatCalculator = {
   },
 
   /**
+   * Validate inputs — returns true if valid, false if any negatives found.
+   * Marks invalid fields with .input-error and shows an error message below them.
+   */
+  validateInputs() {
+    const fieldIds = ['cash', 'gold', 'silver', 'investments', 'business-assets',
+                      'receivables', 'crypto', 'other-assets', 'debts', 'unpaid-bills'];
+    let valid = true;
+
+    fieldIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      // Remove any previous error state
+      el.classList.remove('input-error');
+      const prevMsg = el.parentElement.querySelector('.input-error-msg');
+      if (prevMsg) prevMsg.remove();
+
+      const raw = Utils.parseNumber(el.value);
+      if (raw < 0) {
+        valid = false;
+        el.classList.add('input-error');
+        const msg = document.createElement('span');
+        msg.className = 'input-error-msg';
+        msg.textContent = 'Value cannot be negative';
+        el.insertAdjacentElement('afterend', msg);
+      }
+    });
+
+    return valid;
+  },
+
+  /**
+   * Clear all validation error states from inputs
+   */
+  clearValidationErrors() {
+    const fieldIds = ['cash', 'gold', 'silver', 'investments', 'business-assets',
+                      'receivables', 'crypto', 'other-assets', 'debts', 'unpaid-bills'];
+    fieldIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('input-error');
+      const msg = el.parentElement.querySelector('.input-error-msg');
+      if (msg) msg.remove();
+    });
+  },
+
+  /**
    * Get all input values from the form
    */
   getInputValues() {
-    // Clamp all values to 0 — no negative amounts allowed
+    // Clamp all values to 0 — negatives are caught by validateInputs() before this runs
     const getValue = (id) => Math.max(0, Utils.parseNumber(document.getElementById(id)?.value));
 
     return {
@@ -604,6 +663,9 @@ const ZakatCalculator = {
       this.resultsSection.classList.add('hidden');
       this.resultsSection.innerHTML = '';
     }
+    // Clear any validation errors and currency warning
+    this.clearValidationErrors();
+    if (this.currencyWarning) this.currencyWarning.classList.remove('visible');
     // Reset all number inputs to 0
     const inputs = this.form.querySelectorAll('input[type="number"]');
     inputs.forEach(input => input.value = '0');

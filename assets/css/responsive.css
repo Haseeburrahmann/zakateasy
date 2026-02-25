@@ -3,17 +3,9 @@
    Mobile-first breakpoints
    ============================================ */
 
-/* --- Tablet (max-width: 768px) --- */
-@media (max-width: 768px) {
-  :root {
-    --header-height: 60px;
-  }
-
-  h1 { font-size: 1.8rem; }
-  h2 { font-size: 1.4rem; }
-  h3 { font-size: 1.15rem; }
-
-  /* Header & Navigation */
+/* --- Tablet + Mobile nav: hamburger kicks in at 900px to match layout breakpoint --- */
+@media (max-width: 900px) {
+  /* Header & Navigation — hamburger replaces horizontal nav */
   .nav-toggle {
     display: block;
   }
@@ -51,6 +43,45 @@
     background: rgba(255, 255, 255, 0.08);
   }
 
+  /* Stack gold/silver input + unit dropdown vertically */
+  .input-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .input-row .unit-select {
+    width: 100%;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+
+  /* Stack calculator form and results vertically */
+  .calc-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .calc-layout-results {
+    position: static; /* disable sticky on single-column layout */
+  }
+}
+
+/* --- Tablet (max-width: 768px) --- */
+@media (max-width: 768px) {
+  :root {
+    --header-height: 60px;
+  }
+
+  h1 { font-size: 1.8rem; }
+  h2 { font-size: 1.4rem; }
+  h3 { font-size: 1.15rem; }
+
   /* Hero */
   .hero {
     padding: 40px 20px;
@@ -84,16 +115,6 @@
     padding: 32px 0;
   }
 
-  /* Stack form and results vertically on mobile */
-  .calc-layout {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
-  .calc-layout-results {
-    position: static; /* disable sticky on mobile */
-  }
-
   .calc-form {
     padding: 24px 20px;
   }
@@ -101,23 +122,6 @@
   .results-placeholder {
     min-height: 160px;
     padding: 24px;
-  }
-
-  .input-row {
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .input-row .unit-select {
-    width: 100%;
-  }
-
-  .form-actions {
-    flex-direction: column;
-  }
-
-  .form-actions .btn {
-    width: 100%;
   }
 
   /* Results */
@@ -299,18 +303,6 @@
 
   .arabic-text {
     font-size: 1.2rem;
-  }
-}
-
-/* --- Medium screens: stack layout at 900px --- */
-@media (max-width: 900px) {
-  .calc-layout {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
-  .calc-layout-results {
-    position: static;
   }
 }
 
