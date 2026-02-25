@@ -143,16 +143,22 @@ const ZakatCalculator = {
     if (goldLabel) {
       // Preserve the help-tip button when updating label text
       const helpBtn = goldLabel.querySelector('.help-tip');
-      goldLabel.textContent = (goldUnit && goldUnit.value === 'grams')
+      const goldUnitVal = goldUnit && goldUnit.value;
+      goldLabel.textContent = goldUnitVal === 'grams'
         ? 'Gold (weight in grams)'
-        : `Gold (market value in ${currencyLabel})`;
+        : goldUnitVal === 'tolas'
+          ? 'Gold (weight in tola)'
+          : `Gold (market value in ${currencyLabel})`;
       if (helpBtn) goldLabel.appendChild(helpBtn);
     }
     if (silverLabel) {
       const helpBtn = silverLabel.querySelector('.help-tip');
-      silverLabel.textContent = (silverUnit && silverUnit.value === 'grams')
+      const silverUnitVal = silverUnit && silverUnit.value;
+      silverLabel.textContent = silverUnitVal === 'grams'
         ? 'Silver (weight in grams)'
-        : `Silver (market value in ${currencyLabel})`;
+        : silverUnitVal === 'tolas'
+          ? 'Silver (weight in tola)'
+          : `Silver (market value in ${currencyLabel})`;
       if (helpBtn) silverLabel.appendChild(helpBtn);
     }
   },
@@ -358,14 +364,19 @@ const ZakatCalculator = {
     const nisabSilverLocal = silverPricePerGramLocal * 612.36;
     const nisabLocal = isGoldStandard ? nisabGoldLocal : nisabSilverLocal;
 
-    // Convert gold/silver to local currency value if entered in grams
+    // Convert gold/silver to local currency value if entered in grams or tolas
+    const GRAMS_PER_TOLA = 11.6638;
     const goldValue = values.goldUnit === 'grams'
       ? values.goldAmount * goldPricePerGramLocal
-      : values.goldAmount;
+      : values.goldUnit === 'tolas'
+        ? values.goldAmount * GRAMS_PER_TOLA * goldPricePerGramLocal
+        : values.goldAmount;
 
     const silverValue = values.silverUnit === 'grams'
       ? values.silverAmount * silverPricePerGramLocal
-      : values.silverAmount;
+      : values.silverUnit === 'tolas'
+        ? values.silverAmount * GRAMS_PER_TOLA * silverPricePerGramLocal
+        : values.silverAmount;
 
     // Calculate totals (all in local currency)
     const totalAssets = values.cash + goldValue + silverValue
