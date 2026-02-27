@@ -8,12 +8,121 @@ const BlogUtils = {
    * Initialize all blog features
    */
   init() {
+    this.renderBlogListing();   // Must run FIRST — renders cards before filters attach
     this.generateTOC();
     this.calculateReadingTime();
     this.initFilters();
     this.initShareButtons();
     this.initTOCScroll();
     this.initStickyCTA();
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Blog listing renderer — reads from assets/js/posts-data.js (BLOG_POSTS)
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Render the blog listing page from BLOG_POSTS data.
+   * Only runs when #blog-featured-container and #blog-grid exist.
+   */
+  renderBlogListing() {
+    const featuredEl = document.getElementById('blog-featured-container');
+    const gridEl     = document.getElementById('blog-grid');
+    if (!featuredEl || !gridEl || typeof BLOG_POSTS === 'undefined') return;
+
+    const featured  = BLOG_POSTS.find(p => p.featured) || BLOG_POSTS[0];
+    const gridPosts = BLOG_POSTS.filter(p => p !== featured);
+
+    featuredEl.innerHTML = this._buildFeaturedCard(featured);
+    gridEl.innerHTML     = gridPosts.map(p => this._buildGridCard(p)).join('');
+
+    this._injectBlogSchema();
+  },
+
+  /**
+   * Return the badge label for a post (respects badgeLabel override).
+   */
+  _getBadgeLabel(post) {
+    if (post.badgeLabel) return post.badgeLabel;
+    return post.category.charAt(0).toUpperCase() + post.category.slice(1);
+  },
+
+  /**
+   * Build HTML for the large featured card.
+   */
+  _buildFeaturedCard(post) {
+    const badge      = this._getBadgeLabel(post);
+    const badgeClass = 'badge-' + post.category;
+    const readMore   = post.readMoreText || 'Read More \u2192';
+    return `<a href="posts/${post.slug}.html" class="blog-card" data-category="${post.category}">
+      <div class="blog-card-image">
+        <span class="blog-card-badge ${badgeClass}">${badge}</span>
+        <span class="card-emoji">${post.emoji}</span>
+      </div>
+      <div class="blog-card-body">
+        <div class="blog-card-meta">
+          <span>${post.date}</span>
+          <span class="separator">&middot;</span>
+          <span>${post.readTime} min read</span>
+        </div>
+        <h3 class="blog-card-title">${post.title}</h3>
+        <p class="blog-card-excerpt">${post.excerpt}</p>
+        <span class="blog-card-read-more">${readMore}</span>
+      </div>
+    </a>`;
+  },
+
+  /**
+   * Build HTML for a standard grid card.
+   */
+  _buildGridCard(post) {
+    const badge      = this._getBadgeLabel(post);
+    const badgeClass = 'badge-' + post.category;
+    return `<a href="posts/${post.slug}.html" class="blog-card" data-category="${post.category}">
+      <div class="blog-card-image">
+        <span class="blog-card-badge ${badgeClass}">${badge}</span>
+        <span class="card-emoji">${post.emoji}</span>
+      </div>
+      <div class="blog-card-body">
+        <div class="blog-card-meta">
+          <span>${post.date}</span>
+          <span class="separator">&middot;</span>
+          <span>${post.readTime} min read</span>
+        </div>
+        <h3 class="blog-card-title">${post.title}</h3>
+        <p class="blog-card-excerpt">${post.excerpt}</p>
+        <span class="blog-card-read-more">Read More \u2192</span>
+      </div>
+    </a>`;
+  },
+
+  /**
+   * Inject a JSON-LD CollectionPage schema for the blog listing.
+   * Dynamically generated from BLOG_POSTS so it stays in sync automatically.
+   */
+  _injectBlogSchema() {
+    if (typeof BLOG_POSTS === 'undefined') return;
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': 'ZakatEasy Blog - Zakat Guides, Ramadan Tips & Resources',
+      'description': 'Expert guides on Zakat calculation, Ramadan preparation, and Islamic charity.',
+      'url': 'https://zakateasy.org/blog/',
+      'mainEntity': {
+        '@type': 'ItemList',
+        'numberOfItems': BLOG_POSTS.length,
+        'itemListElement': BLOG_POSTS.map((p, i) => ({
+          '@type': 'ListItem',
+          'position': i + 1,
+          'url': 'https://zakateasy.org/blog/posts/' + p.slug + '.html',
+          'name': p.title
+        }))
+      }
+    };
+    const el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.textContent = JSON.stringify(schema, null, 2);
+    document.head.appendChild(el);
   },
 
   /**

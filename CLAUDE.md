@@ -46,7 +46,7 @@ zakateasy/
 └── llms.txt                # LLM-friendly site description
 ```
 
-## Blog Posts (12 total)
+## Blog Posts (15 total)
 
 | File | Category | FAQPage Schema |
 |------|----------|----------------|
@@ -63,6 +63,17 @@ zakateasy/
 | `zakat-vs-sadaqah-vs-fitrana.html` | FAQ | **Yes** |
 | `zakat-on-savings-2026.html` | FAQ | **Yes** |
 | `last-day-pay-zakat-ramadan-2026.html` | FAQ | **Yes** |
+| `laylat-al-qadr-2026.html` | Guide | No |
+| `zakat-al-fitr-2026.html` | Guide | No |
+
+## Adding a New Blog Post — MANDATORY 4-Step Checklist
+
+Every time a new blog post is created, ALL four steps are required. Skipping any step causes bugs.
+
+1. **Create the HTML file** in `blog/posts/your-slug.html`
+2. **Add to `assets/js/posts-data.js`** — add a new entry to `BLOG_POSTS` array (newest posts near top of the grid section). This is what makes the post appear in the blog listing automatically.
+3. **Update `sitemap.xml`** — add the new `<url>` entry
+4. **If Ramadan-related: update `ramadan.html`** — add a resource card to the "Ramadan 2026 Guides & Articles" section
 
 ## Core Calculator Logic
 
@@ -174,6 +185,7 @@ All responsive media queries go in `responsive.css` only, not scattered in `main
 5. **Google Fonts: preload pattern only** — never `<link rel="stylesheet">` directly for Google Fonts
 6. **Netlify form names must be globally unique** across the entire site
 7. **JS modules follow object pattern** — no classes, no loose globals, no `var`
+8. **Blog listing is data-driven** — `blog/index.html` renders cards from `assets/js/posts-data.js`. NEVER add hardcoded blog cards directly to `blog/index.html`; always add to `posts-data.js` instead.
 
 ## Netlify Forms
 
@@ -247,6 +259,13 @@ Each page footer has 4 columns: Brand | Pages | Resources | Legal
 - **Footer Pages column** updated on all 24 pages (added Ramadan + Duas links)
 - **Homepage title/OG** updated to include "online" keyword
 
+### Phase 4 (Architecture — Feb 2026)
+- **New blog posts** added: `laylat-al-qadr-2026.html`, `zakat-al-fitr-2026.html` (total: 15 posts)
+- **Data-driven blog listing** — created `assets/js/posts-data.js` as single source of truth; `blog/index.html` now renders all cards dynamically via JS (no more hardcoded HTML cards)
+- **Blog schema auto-generated** — `blog/index.html` JSON-LD schema injected by `blog.js` from posts-data, stays in sync automatically
+- **ramadan.html articles section** updated with Laylat al-Qadr and Zakat al-Fitr posts
+- **Cache-busting** — added `?v=2` to all CSS `<link>` tags across all 28 HTML pages (fixes currency warning bug for returning visitors)
+
 ## Slash Commands (Claude Multi-Agent System)
 
 These commands are in `.claude/commands/` and act as specialized agents:
@@ -272,6 +291,5 @@ Additional documentation in `/docs/`:
 
 - Submit sitemap to Google Search Console for `zakateasy.org` property
 - Request indexing for all blog posts via URL Inspection tool
-- Upcoming blog posts needed (before Ramadan 2026 ~Mar 1):
-  - Laylat al-Qadr 2026 guide (publish ~Mar 11–15) → `/new-blog-post laylat-al-qadr-2026`
-  - Zakat al-Fitr 2026 guide (publish by Mar 21) → `/new-blog-post zakat-al-fitr-2026`
+- Next blog posts (for Ramadan 2026 ~Mar 1):
+  - Use `/new-blog-post` command; then add to `posts-data.js`, update `sitemap.xml`, and (if Ramadan-related) `ramadan.html`
