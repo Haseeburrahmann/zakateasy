@@ -594,6 +594,32 @@ const ZakatCalculator = {
           <p class="arabic-text">تَقَبَّلَ اللهُ مِنَّا وَمِنْكُم</p>
         </div>
 
+        <!-- Result Actions: Share, Download, Email -->
+        <div class="result-actions">
+          <p class="result-actions-label">Save or share your result:</p>
+          <div class="result-actions-btns">
+            <button class="result-btn result-btn-whatsapp" onclick="ZakatCalculator.shareWhatsApp(${b.zakatOwed})">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.126 1.526 5.868L0 24l6.306-1.506A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.003-1.37l-.359-.213-3.722.888.914-3.63-.234-.373A9.818 9.818 0 1112 21.818z"/></svg>
+              Share on WhatsApp
+            </button>
+            <button class="result-btn result-btn-pdf" onclick="ZakatCalculator.downloadPDF()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+              Download PDF
+            </button>
+          </div>
+          <div class="result-email-capture" id="result-email-capture">
+            <p class="result-email-label">📩 Get your full breakdown by email:</p>
+            <form class="result-email-form" id="result-email-form" name="zakat-result-email" method="POST" data-netlify="true" action="/thank-you.html">
+              <input type="hidden" name="form-name" value="zakat-result-email">
+              <input type="hidden" name="zakat-amount" id="hidden-zakat-amount" value="${f(b.zakatOwed)}">
+              <input type="hidden" name="currency" value="${this.getCurrency()}">
+              <input type="email" name="email" placeholder="Your email address" class="result-email-input" required>
+              <button type="submit" class="result-btn result-btn-email">Send Results</button>
+            </form>
+            <p class="result-email-note">No spam. We'll only send you this Zakat breakdown.</p>
+          </div>
+        </div>
+
         <div class="results-disclaimer">
           <p><strong>Disclaimer:</strong> This calculation uses the <strong>${b.nisabStandard === 'silver' ? 'Silver' : 'Gold'} Standard</strong> Nisab threshold
           (${b.nisabStandard === 'silver' ? '612.36g of silver' : '87.48g of gold'}).
@@ -603,6 +629,165 @@ const ZakatCalculator = {
         </div>
       </div>
     `;
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Result Actions: WhatsApp Share + PDF Download
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Share Zakat result via WhatsApp with a pre-filled message.
+   */
+  shareWhatsApp(zakatOwed) {
+    const currency = this.getCurrency();
+    const formatted = this.fmt(zakatOwed);
+    const msg = `I just calculated my Zakat for Ramadan 2026 using ZakatEasy.\n\n` +
+                `My Zakat amount: *${formatted}* (${currency})\n\n` +
+                `Calculate yours for free at: https://zakateasy.org`;
+    const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+
+    if (typeof gtag === 'function') {
+      gtag('event', 'share', { method: 'whatsapp', content_type: 'zakat_result' });
+    }
+  },
+
+  /**
+   * Download the current Zakat result as a branded PDF.
+   * Uses jsPDF loaded from CDN in index.html.
+   */
+  downloadPDF() {
+    // jsPDF must be loaded — fail gracefully if not
+    if (typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined') {
+      alert('PDF download is loading, please try again in a moment.');
+      return;
+    }
+
+    const { jsPDF } = window.jspdf || window;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+    const currency = this.getCurrency();
+    const today    = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    const panel    = document.querySelector('.results-card');
+    if (!panel) return;
+
+    // ── Colours ──────────────────────────────────────────────────────────
+    const green  = [15, 81, 50];
+    const gold   = [212, 175, 55];
+    const white  = [255, 255, 255];
+    const light  = [248, 249, 250];
+    const dark   = [44, 62, 80];
+    const muted  = [93, 109, 126];
+
+    // ── Header bar ───────────────────────────────────────────────────────
+    doc.setFillColor(...green);
+    doc.rect(0, 0, 210, 28, 'F');
+
+    doc.setTextColor(...white);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.text('ZakatEasy', 14, 13);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text('zakateasy.org', 14, 21);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text('Zakat Calculation Summary', 105, 13, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text(today, 105, 21, { align: 'center' });
+
+    // ── Gold accent bar ──────────────────────────────────────────────────
+    doc.setFillColor(...gold);
+    doc.rect(0, 28, 210, 2, 'F');
+
+    // ── Zakat amount hero ────────────────────────────────────────────────
+    doc.setFillColor(...light);
+    doc.rect(14, 36, 182, 28, 'F');
+
+    const zakatEl = panel.querySelector('.zakat-amount');
+    const zakatAmount = zakatEl ? zakatEl.textContent.trim() : 'N/A';
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...muted);
+    doc.text('Your Zakat Owed', 105, 46, { align: 'center' });
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(...green);
+    doc.text(zakatAmount, 105, 57, { align: 'center' });
+
+    // ── Breakdown table ──────────────────────────────────────────────────
+    let y = 74;
+    const rows = panel.querySelectorAll('.breakdown-row');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...dark);
+    doc.text('Breakdown', 14, y);
+    y += 5;
+
+    rows.forEach((row) => {
+      const spans = row.querySelectorAll('span');
+      if (spans.length < 2) return;
+      const label = spans[0].textContent.trim();
+      const value = spans[1].textContent.trim();
+
+      const isTotal    = row.classList.contains('breakdown-total');
+      const isSection  = label.match(/^(Assets|Deductible|Total Assets|Total Liabilities|Net Zakatable|Nisab)/);
+
+      if (y > 270) { doc.addPage(); y = 20; }
+
+      if (isTotal || isSection) {
+        doc.setFillColor(...green);
+        doc.rect(14, y, 182, 7, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(...white);
+        doc.text(label, 17, y + 5);
+        doc.text(value, 193, y + 5, { align: 'right' });
+        y += 9;
+      } else {
+        doc.setFillColor(y % 18 < 9 ? 255 : 248, y % 18 < 9 ? 255 : 249, y % 18 < 9 ? 255 : 250);
+        doc.rect(14, y, 182, 7, 'F');
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(...dark);
+        doc.text(label, 17, y + 5);
+        doc.setTextColor(...muted);
+        doc.text(value, 193, y + 5, { align: 'right' });
+        y += 7;
+      }
+    });
+
+    // ── Disclaimer footer ────────────────────────────────────────────────
+    y += 8;
+    if (y > 255) { doc.addPage(); y = 20; }
+    doc.setFillColor(...light);
+    doc.rect(14, y, 182, 18, 'F');
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(...muted);
+    const disclaimer = 'This calculation is for informational purposes only. Please consult a qualified Islamic scholar for your specific circumstances. Zakat rate: 2.5%.';
+    const lines = doc.splitTextToSize(disclaimer, 174);
+    doc.text(lines, 17, y + 5);
+
+    // ── Footer bar ───────────────────────────────────────────────────────
+    doc.setFillColor(...green);
+    doc.rect(0, 284, 210, 13, 'F');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...white);
+    doc.text('Generated by ZakatEasy.org — Free Islamic Zakat Calculator', 105, 291, { align: 'center' });
+
+    doc.save(`ZakatEasy-Calculation-${today.replace(/ /g, '-')}.pdf`);
+
+    if (typeof gtag === 'function') {
+      gtag('event', 'download', { event_category: 'result', event_label: 'pdf' });
+    }
   },
 
   /**

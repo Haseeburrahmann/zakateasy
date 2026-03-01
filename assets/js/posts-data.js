@@ -46,6 +46,42 @@ const BLOG_POSTS = [
 
   // ── Grid Posts (newest first) ──────────────────────────────────────────────
   {
+    slug:     'zakat-calculator-uk-2026',
+    title:    'Zakat Calculator UK 2026 — Calculate Zakat in British Pounds',
+    date:     'March 1, 2026',
+    category: 'guide',
+    emoji:    '🇬🇧',
+    readTime: 8,
+    excerpt:  'Calculate your Zakat in GBP with live gold prices. UK-specific guidance on ISAs, workplace pensions, SIPPs, and where to pay Zakat in Britain.'
+  },
+  {
+    slug:     'zakat-on-401k-ira-pension-2026',
+    title:    'Zakat on 401(k), IRA & Pension — Complete 2026 Guide',
+    date:     'March 1, 2026',
+    category: 'faq',
+    emoji:    '🏦',
+    readTime: 8,
+    excerpt:  'Do you pay Zakat on your 401(k), IRA, or pension plan? Learn the scholarly ruling, how to calculate, and what portion of your retirement account is zakatable.'
+  },
+  {
+    slug:     'zakat-on-cryptocurrency-2026',
+    title:    'Zakat on Cryptocurrency 2026 — Bitcoin, Ethereum & Digital Assets',
+    date:     'March 1, 2026',
+    category: 'faq',
+    emoji:    '₿',
+    readTime: 7,
+    excerpt:  'Is Zakat due on Bitcoin, Ethereum, or stablecoins? Learn the scholarly consensus, how to calculate crypto Zakat, and how to use ZakatEasy\'s crypto field.'
+  },
+  {
+    slug:     'zakat-al-fitr-amount-by-country-2026',
+    title:    'Zakat al-Fitr Amount by Country 2026 — USA, UK, Canada & More',
+    date:     'March 1, 2026',
+    category: 'guide',
+    emoji:    '🌙',
+    readTime: 8,
+    excerpt:  'How much is Fitrana in 2026? Country-by-country amounts in USD, GBP, CAD, AUD, SAR. Who must pay, the Eid deadline, and how Fitrana differs from Zakat al-Mal.'
+  },
+  {
     slug:     'laylat-al-qadr-2026',
     title:    'Laylat al-Qadr 2026: When Is It & How to Worship the Night of Power',
     date:     'February 26, 2026',

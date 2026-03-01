@@ -41,6 +41,9 @@
 
   <!-- Google AdSense -->
   <meta name="google-adsense-account" content="ca-pub-6867328086411956">
+  <!-- jsPDF — used for "Download PDF" on calculator result -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6867328086411956"
        crossorigin="anonymous"></script>
 
@@ -662,5 +665,10 @@
     });
   </script>
 
+  <!-- Netlify form discovery for mid-article-checklist (injected via JS in blog posts) -->
+  <form name="mid-article-checklist" data-netlify="true" hidden>
+    <input type="email" name="email">
+    <input type="hidden" name="source">
+  </form>
 </body>
 </html>
