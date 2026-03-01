@@ -269,11 +269,20 @@ const ZakatCalculator = {
     const goldUnit = document.getElementById('gold-unit');
     const silverUnit = document.getElementById('silver-unit');
 
+    const onUnitChange = () => {
+      this.updateLabels();
+      // Re-calculate if results are already visible so the displayed value
+      // updates immediately when the user switches between Value / Grams / Tola
+      if (this.resultsSection && !this.resultsSection.classList.contains('hidden')) {
+        this.calculate(false);
+      }
+    };
+
     if (goldUnit) {
-      goldUnit.addEventListener('change', () => this.updateLabels());
+      goldUnit.addEventListener('change', onUnitChange);
     }
     if (silverUnit) {
-      silverUnit.addEventListener('change', () => this.updateLabels());
+      silverUnit.addEventListener('change', onUnitChange);
     }
   },
 
