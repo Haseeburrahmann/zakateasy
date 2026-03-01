@@ -47,6 +47,32 @@
     <priority>0.9</priority>
   </url>
 
+  <!-- New posts March 2026 -->
+  <url>
+    <loc>https://zakateasy.org/blog/posts/zakat-calculator-uk-2026.html</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://zakateasy.org/blog/posts/zakat-on-401k-ira-pension-2026.html</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://zakateasy.org/blog/posts/zakat-on-cryptocurrency-2026.html</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://zakateasy.org/blog/posts/zakat-al-fitr-amount-by-country-2026.html</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- High priority Ramadan / seasonal posts -->
   <url>
     <loc>https://zakateasy.org/blog/posts/laylat-al-qadr-2026.html</loc>

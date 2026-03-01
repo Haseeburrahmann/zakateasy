@@ -815,6 +815,106 @@ p {
   font-style: italic;
 }
 
+/* --- Result Actions (Share / Download / Email) --- */
+.result-actions {
+  padding: 24px 28px;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.result-actions-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.result-actions-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.result-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s, transform 0.1s;
+  text-decoration: none;
+}
+
+.result-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+.result-btn:active { transform: translateY(0); }
+
+.result-btn-whatsapp {
+  background: #25D366;
+  color: #fff;
+}
+
+.result-btn-pdf {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.result-btn-email {
+  background: var(--color-secondary);
+  color: #000;
+  white-space: nowrap;
+}
+
+/* Email capture row inside results */
+.result-email-capture {
+  border-top: 1px solid var(--color-border);
+  padding-top: 18px;
+}
+
+.result-email-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 10px 0;
+}
+
+.result-email-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.result-email-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  background: #fff;
+  color: var(--color-text);
+}
+
+.result-email-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.1);
+}
+
+.result-email-note {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin: 8px 0 0 0;
+}
+
 /* --- Below Nisab Message --- */
 .below-nisab-message {
   padding: 20px 36px;
